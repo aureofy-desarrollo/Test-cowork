@@ -43,6 +43,7 @@
         'data/mail_template_data.xml',
         
         # Views
+        'views/dashboard_views.xml',
         'views/menu_views.xml',
         'views/cowork_floor_views.xml',
         'views/cowork_desk_views.xml',
@@ -58,7 +59,6 @@
         'views/cowork_credits_views.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',
-        'views/dashboard_views.xml',
         
         # Wizards
         'wizard/mass_mail_wizard_views.xml',
