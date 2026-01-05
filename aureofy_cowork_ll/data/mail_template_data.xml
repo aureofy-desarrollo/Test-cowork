@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template: Confirmación de Membresía -->
+    <record id="email_template_membership_confirmation" model="mail.template">
+        <field name="name">Cowork: Confirmación de Membresía</field>
+        <field name="model_id" ref="model_cowork_membership"/>
+        <field name="subject">Confirmación de Membresía - {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Estimado/a <strong><t t-out="object.partner_id.name"/></strong>,
+    </p>
+    <br/>
+    <p>
+        Su membresía ha sido confirmada con los siguientes datos:
+    </p>
+    <ul>
+        <li><strong>Número de Membresía:</strong> <t t-out="object.name"/></li>
+        <li><strong>Plan:</strong> <t t-out="object.plan_id.name"/></li>
+        <li><strong>Tipo de Espacio:</strong> <t t-out="object.space_type"/></li>
+        <li><strong>Fecha de Inicio:</strong> <t t-out="object.date_start"/></li>
+        <li><strong>Fecha de Fin:</strong> <t t-out="object.date_end"/></li>
+        <li><strong>Créditos Disponibles:</strong> <t t-out="object.credits_remaining"/></li>
+    </ul>
+    <br/>
+    <p>
+        Puede usar sus créditos para reservar servicios adicionales como salas de reuniones, 
+        salones de eventos o espacios compartidos.
+    </p>
+    <br/>
+    <p>
+        ¡Gracias por elegirnos!
+    </p>
+    <br/>
+    <p>Saludos cordiales,</p>
+    <p><t t-out="object.company_id.name"/></p>
+</div>
+        </field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Template: Solicitud de Acceso al Admin -->
+    <record id="email_template_access_request_admin" model="mail.template">
+        <field name="name">Cowork: Nueva Solicitud de Acceso (Admin)</field>
+        <field name="model_id" ref="model_cowork_access_request"/>
+        <field name="subject">Nueva Solicitud de Acceso - {{ object.name }}</field>
+        <field name="email_to">{{ (object.company_id.email or '') }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Nueva solicitud de acceso recibida:</p>
+    <ul>
+        <li><strong>Referencia:</strong> <t t-out="object.name"/></li>
+        <li><strong>Miembro:</strong> <t t-out="object.partner_id.name"/></li>
+        <li><strong>Servicio:</strong> <t t-out="object.service_id.name"/></li>
+        <li><strong>Fecha Programada:</strong> <t t-out="object.date_scheduled"/></li>
+        <li><strong>Método de Pago:</strong> <t t-out="object.payment_method"/></li>
+    </ul>
+    <p>Ingrese al sistema para aprobar o rechazar la solicitud.</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Template: Acceso Aprobado -->
+    <record id="email_template_access_approved" model="mail.template">
+        <field name="name">Cowork: Solicitud de Acceso Aprobada</field>
+        <field name="model_id" ref="model_cowork_access_request"/>
+        <field name="subject">Solicitud de Acceso Aprobada - {{ object.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Estimado/a <strong><t t-out="object.partner_id.name"/></strong>,</p>
+    <br/>
+    <p>Su solicitud de acceso ha sido <strong style="color: green;">APROBADA</strong>.</p>
+    <ul>
+        <li><strong>Servicio:</strong> <t t-out="object.service_id.name"/></li>
+        <li><strong>Fecha:</strong> <t t-out="object.date_scheduled"/></li>
+        <li><strong>Duración:</strong> <t t-out="object.duration_hours"/> horas</li>
+    </ul>
+    <t t-if="object.payment_method == 'credits'">
+        <p>Se han descontado <strong><t t-out="object.credits_used"/> créditos</strong> de su cuenta.</p>
+    </t>
+    <p>¡Que disfrute del servicio!</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Template: Acceso Rechazado -->
+    <record id="email_template_access_rejected" model="mail.template">
+        <field name="name">Cowork: Solicitud de Acceso Rechazada</field>
+        <field name="model_id" ref="model_cowork_access_request"/>
+        <field name="subject">Solicitud de Acceso Rechazada - {{ object.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Estimado/a <strong><t t-out="object.partner_id.name"/></strong>,</p>
+    <br/>
+    <p>Lamentamos informarle que su solicitud de acceso ha sido <strong style="color: red;">RECHAZADA</strong>.</p>
+    <ul>
+        <li><strong>Servicio:</strong> <t t-out="object.service_id.name"/></li>
+        <li><strong>Fecha solicitada:</strong> <t t-out="object.date_scheduled"/></li>
+    </ul>
+    <t t-if="object.rejection_reason">
+        <p><strong>Motivo:</strong> <t t-out="object.rejection_reason"/></p>
+    </t>
+    <p>Por favor, contacte con nosotros si tiene alguna pregunta.</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Template: Solicitud de Valoración -->
+    <record id="email_template_rating_request" model="mail.template">
+        <field name="name">Cowork: Solicitud de Valoración</field>
+        <field name="model_id" ref="model_cowork_membership"/>
+        <field name="subject">¿Qué tal fue su experiencia? - {{ object.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Estimado/a <strong><t t-out="object.partner_id.name"/></strong>,</p>
+    <br/>
+    <p>Su membresía <strong><t t-out="object.name"/></strong> está por finalizar o ya ha finalizado.</p>
+    <p>Nos encantaría conocer su opinión sobre nuestros servicios.</p>
+    <br/>
+    <p>Por favor, tómese un momento para valorar su experiencia.</p>
+    <br/>
+    <p>¡Gracias por confiar en nosotros!</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Template: Recordatorio de Renovación -->
+    <record id="email_template_renewal_reminder" model="mail.template">
+        <field name="name">Cowork: Recordatorio de Renovación</field>
+        <field name="model_id" ref="model_cowork_membership"/>
+        <field name="subject">Su membresía vence pronto - {{ object.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Estimado/a <strong><t t-out="object.partner_id.name"/></strong>,</p>
+    <br/>
+    <p>Le recordamos que su membresía <strong><t t-out="object.name"/></strong> vence el 
+    <strong><t t-out="object.date_end"/></strong>.</p>
+    <br/>
+    <p>Para continuar disfrutando de nuestros servicios, le invitamos a renovar su membresía.</p>
+    <br/>
+    <p>Si tiene alguna pregunta, no dude en contactarnos.</p>
+    <br/>
+    <p>Saludos cordiales,</p>
+    <p><t t-out="object.company_id.name"/></p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

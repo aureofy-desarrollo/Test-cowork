@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_membership_tree" model="ir.ui.view">
+        <field name="name">cowork.membership.tree</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'active'" 
+                  decoration-info="state == 'confirmed'"
+                  decoration-muted="state in ('expired', 'cancelled')">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="plan_id"/>
+                <field name="space_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="credits_remaining"/>
+                <field name="amount_due"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-warning="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_cowork_membership_kanban" model="ir.ui.view">
+        <field name="name">cowork.membership.kanban</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="partner_image"/>
+                <field name="plan_id"/>
+                <field name="state"/>
+                <field name="space_type"/>
+                <field name="credits_remaining"/>
+                <progressbar field="state" colors='{"draft": "secondary", "confirmed": "info", "active": "success", "expired": "warning", "cancelled": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('res.partner', 'avatar_128', record.partner_id.raw_value)" 
+                                     alt="Miembro" class="o_image_64_cover"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div><field name="partner_id"/></div>
+                                <div><field name="plan_id"/></div>
+                                <div class="text-muted">
+                                    <i class="fa fa-coins"/> <field name="credits_remaining"/> créditos
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Calendario -->
+    <record id="view_cowork_membership_calendar" model="ir.ui.view">
+        <field name="name">cowork.membership.calendar</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <calendar string="Membresías" date_start="date_start" date_stop="date_end" color="space_type" mode="month">
+                <field name="partner_id"/>
+                <field name="plan_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vista Graph -->
+    <record id="view_cowork_membership_graph" model="ir.ui.view">
+        <field name="name">cowork.membership.graph</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <graph string="Membresías" type="bar">
+                <field name="space_type"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vista Pivot -->
+    <record id="view_cowork_membership_pivot" model="ir.ui.view">
+        <field name="name">cowork.membership.pivot</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <pivot string="Membresías">
+                <field name="space_type" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_membership_form" model="ir.ui.view">
+        <field name="name">cowork.membership.form</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmar"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_create_invoice" type="object" string="Crear Factura"
+                            invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="action_activate" type="object" string="Activar"
+                            invisible="state != 'confirmed'" class="btn-success"/>
+                    <button name="action_renew" type="object" string="Renovar"
+                            invisible="state not in ('active', 'expired')"/>
+                    <button name="action_send_email" type="object" string="Enviar por Email"
+                            invisible="state == 'draft'"/>
+                    <button name="action_send_rating_request" type="object" string="Solicitar Valoración"
+                            invisible="state not in ('active', 'expired')"/>
+                    <button name="action_cancel" type="object" string="Cancelar"
+                            invisible="state in ('cancelled', 'expired')" confirm="¿Está seguro de cancelar esta membresía?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoices" type="object" 
+                                class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="invoice_count" widget="statinfo" string="Facturas"/>
+                        </button>
+                        <button name="action_view_access_requests" type="object" 
+                                class="oe_stat_button" icon="fa-key">
+                            <field name="access_request_count" widget="statinfo" string="Accesos"/>
+                        </button>
+                    </div>
+                    <field name="partner_image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Miembro">
+                            <field name="partner_id"/>
+                            <field name="partner_email"/>
+                            <field name="partner_phone"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Plan y Espacio">
+                            <field name="plan_id"/>
+                            <field name="space_type"/>
+                            <field name="desk_id" invisible="space_type != 'coworking'"
+                                   domain="[('state', '=', 'available')]"/>
+                            <field name="bed_id" invisible="space_type != 'coliving'"
+                                   domain="[('state', '=', 'available')]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Fechas">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Créditos">
+                            <field name="credits_granted"/>
+                            <field name="credits_used"/>
+                            <field name="credits_remaining"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Facturación">
+                            <field name="amount_total"/>
+                            <field name="amount_paid"/>
+                            <field name="amount_due"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Otros">
+                            <field name="deposit_id" invisible="not deposit_required"/>
+                            <field name="rating"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Servicios">
+                            <group>
+                                <field name="service_ids" widget="many2many_tags" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Políticas">
+                            <group>
+                                <field name="policies_accepted"/>
+                                <field name="policy_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Solicitudes de Acceso">
+                            <field name="access_request_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="service_id"/>
+                                    <field name="date_scheduled"/>
+                                    <field name="payment_method"/>
+                                    <field name="credits_used"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Requisitos y Notas">
+                            <group>
+                                <field name="requirements" placeholder="Requisitos especiales del miembro..."/>
+                            </group>
+                            <group>
+                                <field name="notes" placeholder="Notas internas..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_cowork_membership_search" model="ir.ui.view">
+        <field name="name">cowork.membership.search</field>
+        <field name="model">cowork.membership</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="plan_id"/>
+                <separator/>
+                <filter name="draft" string="Borrador" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmadas" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="active" string="Activas" domain="[('state', '=', 'active')]"/>
+                <filter name="expired" string="Expiradas" domain="[('state', '=', 'expired')]"/>
+                <separator/>
+                <filter name="coworking" string="Coworking" domain="[('space_type', '=', 'coworking')]"/>
+                <filter name="coliving" string="Coliving" domain="[('space_type', '=', 'coliving')]"/>
+                <separator/>
+                <filter name="my" string="Mis Membresías" domain="[('user_id', '=', uid)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                    <filter name="group_space" string="Tipo de Espacio" context="{'group_by': 'space_type'}"/>
+                    <filter name="group_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                    <filter name="group_month" string="Mes de Inicio" context="{'group_by': 'date_start:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción General -->
+    <record id="action_cowork_membership" model="ir.actions.act_window">
+        <field name="name">Membresías</field>
+        <field name="res_model">cowork.membership</field>
+        <field name="view_mode">tree,kanban,form,calendar,graph,pivot</field>
+        <field name="search_view_id" ref="view_cowork_membership_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva membresía
+            </p>
+        </field>
+    </record>
+
+    <!-- Acción Coworking -->
+    <record id="action_cowork_membership_coworking" model="ir.actions.act_window">
+        <field name="name">Membresías Coworking</field>
+        <field name="res_model">cowork.membership</field>
+        <field name="view_mode">tree,kanban,form,calendar,graph</field>
+        <field name="domain">[('space_type', '=', 'coworking')]</field>
+        <field name="context">{'default_space_type': 'coworking'}</field>
+        <field name="search_view_id" ref="view_cowork_membership_search"/>
+    </record>
+
+    <!-- Acción Coliving -->
+    <record id="action_cowork_membership_coliving" model="ir.actions.act_window">
+        <field name="name">Membresías Coliving</field>
+        <field name="res_model">cowork.membership</field>
+        <field name="view_mode">tree,kanban,form,calendar,graph</field>
+        <field name="domain">[('space_type', '=', 'coliving')]</field>
+        <field name="context">{'default_space_type': 'coliving'}</field>
+        <field name="search_view_id" ref="view_cowork_membership_search"/>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_membership_all"
+              name="Todas las Membresías"
+              parent="menu_cowork_memberships"
+              action="action_cowork_membership"
+              sequence="5"/>
+
+    <menuitem id="menu_membership_coworking"
+              name="Membresías"
+              parent="menu_cowork_coworking"
+              action="action_cowork_membership_coworking"
+              sequence="10"/>
+
+    <menuitem id="menu_membership_coliving"
+              name="Membresías"
+              parent="menu_cowork_coliving"
+              action="action_cowork_membership_coliving"
+              sequence="10"/>
+</odoo>

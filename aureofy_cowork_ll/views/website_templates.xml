@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Página de Solicitud de Coworking -->
+    <template id="website_cowork_request" name="Solicitud de Coworking">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="text-center mb-4">Solicitar Espacio de Coworking</h1>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <form action="/cowork/search" method="get">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de Espacio</label>
+                                        <select name="desk_type" class="form-select" required="required">
+                                            <option value="">Seleccione...</option>
+                                            <t t-foreach="desk_types" t-as="dt">
+                                                <option t-att-value="dt[0]" t-esc="dt[1]"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ciudad</label>
+                                        <select name="city" class="form-select">
+                                            <option value="">Todas las ciudades</option>
+                                            <t t-foreach="cities" t-as="city">
+                                                <option t-att-value="city" t-esc="city"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fa fa-search"/> Buscar Espacio
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Página de Solicitud de Coliving -->
+    <template id="website_coliving_request" name="Solicitud de Coliving">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="text-center mb-4">Solicitar Espacio de Coliving</h1>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <form action="/coliving/search" method="get">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de Cama</label>
+                                        <select name="bed_type" class="form-select" required="required">
+                                            <option value="">Seleccione...</option>
+                                            <t t-foreach="bed_types" t-as="bt">
+                                                <option t-att-value="bt[0]" t-esc="bt[1]"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ciudad</label>
+                                        <select name="city" class="form-select">
+                                            <option value="">Todas las ciudades</option>
+                                            <t t-foreach="cities" t-as="city">
+                                                <option t-att-value="city" t-esc="city"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fa fa-search"/> Buscar Espacio
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Resultados de búsqueda Coworking -->
+    <template id="website_cowork_results" name="Espacios de Coworking Disponibles">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="text-center mb-4">Espacios de Coworking Disponibles</h1>
+                
+                <t t-if="desks">
+                    <div class="row">
+                        <t t-foreach="desks" t-as="desk">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title" t-esc="desk.name"/>
+                                        <p class="card-text">
+                                            <span class="badge bg-primary" t-esc="dict(desk._fields['desk_type'].selection).get(desk.desk_type)"/>
+                                        </p>
+                                        <p class="text-muted">
+                                            <i class="fa fa-building"/> <t t-esc="desk.floor_id.name"/>
+                                            <br/>
+                                            <i class="fa fa-map-marker"/> <t t-esc="desk.city"/>
+                                        </p>
+                                        <p>
+                                            <strong>Precio mensual:</strong> 
+                                            <span t-esc="desk.price_per_month" t-options="{'widget': 'monetary', 'display_currency': desk.currency_id}"/>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-success w-100" data-bs-toggle="modal" 
+                                                t-att-data-bs-target="'#modal-' + str(desk.id)">
+                                            Solicitar Ahora
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Modal de solicitud -->
+                            <div class="modal fade" t-att-id="'modal-' + str(desk.id)" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="/cowork/submit" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="desk_type" t-att-value="desk.desk_type"/>
+                                            <input type="hidden" name="city" t-att-value="desk.city"/>
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Solicitar <t t-esc="desk.name"/></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"/>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nombre Completo *</label>
+                                                    <input type="text" name="name" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email *</label>
+                                                    <input type="email" name="email" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Teléfono *</label>
+                                                    <input type="tel" name="phone" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Fecha de Inicio Preferida</label>
+                                                    <input type="date" name="start_date" class="form-control"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Requisitos Especiales</label>
+                                                    <textarea name="requirements" class="form-control" rows="3"/>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-info text-center">
+                        <p class="mb-0">No se encontraron espacios disponibles con los criterios seleccionados.</p>
+                    </div>
+                </t>
+                
+                <div class="text-center mt-4">
+                    <a href="/cowork/request" class="btn btn-outline-primary">
+                        <i class="fa fa-arrow-left"/> Volver a buscar
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Resultados de búsqueda Coliving -->
+    <template id="website_coliving_results" name="Espacios de Coliving Disponibles">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="text-center mb-4">Espacios de Coliving Disponibles</h1>
+                
+                <t t-if="beds">
+                    <div class="row">
+                        <t t-foreach="beds" t-as="bed">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title" t-esc="bed.name"/>
+                                        <p class="card-text">
+                                            <span class="badge bg-info" t-esc="dict(bed._fields['bed_type'].selection).get(bed.bed_type)"/>
+                                        </p>
+                                        <p class="text-muted">
+                                            <i class="fa fa-building"/> <t t-esc="bed.floor_id.name"/>
+                                            <br/>
+                                            <i class="fa fa-door-open"/> Hab. <t t-esc="bed.room_number"/>
+                                            <br/>
+                                            <i class="fa fa-map-marker"/> <t t-esc="bed.city"/>
+                                        </p>
+                                        <p>
+                                            <strong>Precio mensual:</strong> 
+                                            <span t-esc="bed.price_per_month" t-options="{'widget': 'monetary', 'display_currency': bed.currency_id}"/>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-success w-100" data-bs-toggle="modal" 
+                                                t-att-data-bs-target="'#modal-bed-' + str(bed.id)">
+                                            Solicitar Ahora
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Modal de solicitud -->
+                            <div class="modal fade" t-att-id="'modal-bed-' + str(bed.id)" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="/coliving/submit" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="bed_type" t-att-value="bed.bed_type"/>
+                                            <input type="hidden" name="city" t-att-value="bed.city"/>
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Solicitar <t t-esc="bed.name"/></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"/>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nombre Completo *</label>
+                                                    <input type="text" name="name" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email *</label>
+                                                    <input type="email" name="email" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Teléfono *</label>
+                                                    <input type="tel" name="phone" class="form-control" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Fecha de Inicio Preferida</label>
+                                                    <input type="date" name="start_date" class="form-control"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Requisitos Especiales</label>
+                                                    <textarea name="requirements" class="form-control" rows="3"/>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-info text-center">
+                        <p class="mb-0">No se encontraron espacios disponibles con los criterios seleccionados.</p>
+                    </div>
+                </t>
+                
+                <div class="text-center mt-4">
+                    <a href="/coliving/request" class="btn btn-outline-primary">
+                        <i class="fa fa-arrow-left"/> Volver a buscar
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Página de Agradecimiento -->
+    <template id="website_thanks" name="Gracias por su solicitud">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 text-center">
+                        <div class="card shadow">
+                            <div class="card-body p-5">
+                                <i class="fa fa-check-circle text-success" style="font-size: 80px;"/>
+                                <h1 class="mt-4">¡Gracias por su solicitud!</h1>
+                                <p class="lead mt-3">
+                                    Hemos recibido su solicitud correctamente.
+                                    Nuestro equipo se pondrá en contacto con usted a la brevedad.
+                                </p>
+                                <a href="/" class="btn btn-primary btn-lg mt-4">
+                                    Volver al Inicio
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

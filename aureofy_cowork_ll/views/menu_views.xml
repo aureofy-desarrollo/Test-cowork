@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú principal -->
+    <menuitem id="menu_cowork_root"
+              name="Coworking &amp; Coliving"
+              web_icon="aureofy_cowork_ll,static/description/icon.png"
+              sequence="20"/>
+
+    <!-- Submenús principales -->
+    <menuitem id="menu_cowork_dashboard"
+              name="Dashboard"
+              parent="menu_cowork_root"
+              action="action_cowork_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_cowork_memberships"
+              name="Membresías"
+              parent="menu_cowork_root"
+              sequence="10"/>
+
+    <menuitem id="menu_cowork_coworking"
+              name="Coworking"
+              parent="menu_cowork_memberships"
+              sequence="10"/>
+
+    <menuitem id="menu_cowork_coliving"
+              name="Coliving"
+              parent="menu_cowork_memberships"
+              sequence="20"/>
+
+    <menuitem id="menu_cowork_access"
+              name="Solicitudes de Acceso"
+              parent="menu_cowork_root"
+              sequence="20"/>
+
+    <menuitem id="menu_cowork_credits"
+              name="Créditos"
+              parent="menu_cowork_root"
+              sequence="25"/>
+
+    <menuitem id="menu_cowork_reports"
+              name="Informes"
+              parent="menu_cowork_root"
+              sequence="30"/>
+
+    <menuitem id="menu_cowork_config"
+              name="Configuración"
+              parent="menu_cowork_root"
+              groups="group_cowork_manager"
+              sequence="100"/>
+
+    <!-- Submenús de Configuración -->
+    <menuitem id="menu_config_spaces"
+              name="Espacios"
+              parent="menu_cowork_config"
+              sequence="10"/>
+
+    <menuitem id="menu_config_plans"
+              name="Planes y Servicios"
+              parent="menu_cowork_config"
+              sequence="20"/>
+
+    <menuitem id="menu_config_other"
+              name="Otros"
+              parent="menu_cowork_config"
+              sequence="30"/>
+</odoo>

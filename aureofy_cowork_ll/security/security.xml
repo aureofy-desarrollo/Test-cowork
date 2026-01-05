@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Categoría del módulo -->
+        <record id="module_category_cowork" model="ir.module.category">
+            <field name="name">Coworking &amp; Coliving</field>
+            <field name="description">Gestión de espacios de coworking y coliving</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Grupo Usuario Cowork -->
+        <record id="group_cowork_user" model="res.groups">
+            <field name="name">Usuario</field>
+            <field name="category_id" ref="module_category_cowork"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Acceso básico para gestionar membresías y solicitudes</field>
+        </record>
+
+        <!-- Grupo Manager Cowork -->
+        <record id="group_cowork_manager" model="res.groups">
+            <field name="name">Administrador</field>
+            <field name="category_id" ref="module_category_cowork"/>
+            <field name="implied_ids" eval="[(4, ref('group_cowork_user'))]"/>
+            <field name="comment">Acceso completo a configuración y reportes</field>
+        </record>
+
+        <!-- Reglas de registro para membresías (usuarios ven solo las asignadas) -->
+        <record id="membership_rule_user" model="ir.rule">
+            <field name="name">Membresías: Usuario ve asignadas</field>
+            <field name="model_id" ref="model_cowork_membership"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_cowork_user'))]"/>
+        </record>
+
+        <!-- Managers ven todas las membresías -->
+        <record id="membership_rule_manager" model="ir.rule">
+            <field name="name">Membresías: Manager ve todas</field>
+            <field name="model_id" ref="model_cowork_membership"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_cowork_manager'))]"/>
+        </record>
+    </data>
+</odoo>

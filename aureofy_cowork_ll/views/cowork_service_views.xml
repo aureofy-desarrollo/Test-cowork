@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_service_tree" model="ir.ui.view">
+        <field name="name">cowork.service.tree</field>
+        <field name="model">cowork.service</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="space_type"/>
+                <field name="is_paid"/>
+                <field name="price"/>
+                <field name="credits_cost"/>
+                <field name="allow_credit_payment"/>
+                <field name="requires_approval"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_service_form" model="ir.ui.view">
+        <field name="name">cowork.service.form</field>
+        <field name="model">cowork.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del servicio"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="service_type"/>
+                            <field name="space_type"/>
+                            <field name="requires_approval"/>
+                        </group>
+                        <group>
+                            <field name="is_paid"/>
+                            <field name="price" invisible="not is_paid"/>
+                            <field name="credits_cost" invisible="not is_paid"/>
+                            <field name="allow_credit_payment" invisible="not is_paid"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción">
+                            <field name="description"/>
+                        </page>
+                        <page string="Reglas de Acceso">
+                            <field name="access_rules"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_service" model="ir.actions.act_window">
+        <field name="name">Servicios</field>
+        <field name="res_model">cowork.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo servicio
+            </p>
+            <p>
+                Los servicios pueden incluir salas de reuniones, cafetería, taquillas, etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_service"
+              name="Servicios"
+              parent="menu_config_plans"
+              action="action_cowork_service"
+              sequence="20"/>
+</odoo>

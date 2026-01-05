@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_policy_tree" model="ir.ui.view">
+        <field name="name">cowork.policy.tree</field>
+        <field name="model">cowork.policy</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="space_type"/>
+                <field name="is_mandatory"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_policy_form" model="ir.ui.view">
+        <field name="name">cowork.policy.form</field>
+        <field name="model">cowork.policy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="space_type"/>
+                        </group>
+                        <group>
+                            <field name="is_mandatory"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Descripción">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_policy" model="ir.actions.act_window">
+        <field name="name">Políticas</field>
+        <field name="res_model">cowork.policy</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_policy"
+              name="Políticas"
+              parent="menu_config_other"
+              action="action_cowork_policy"
+              sequence="10"/>
+</odoo>

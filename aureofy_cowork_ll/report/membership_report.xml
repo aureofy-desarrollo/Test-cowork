@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Reporte de Membresía -->
+    <record id="action_report_membership" model="ir.actions.report">
+        <field name="name">Detalle de Membresía</field>
+        <field name="model">cowork.membership</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aureofy_cowork_ll.report_membership_document</field>
+        <field name="report_file">aureofy_cowork_ll.report_membership_document</field>
+        <field name="print_report_name">'Membresia-%s' % object.name</field>
+        <field name="binding_model_id" ref="model_cowork_membership"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template del Reporte -->
+    <template id="report_membership_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center mb-4">
+                            <span>Membresía </span>
+                            <span t-field="o.name"/>
+                        </h2>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h5>Información del Miembro</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Nombre:</strong></td>
+                                        <td><span t-field="o.partner_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email:</strong></td>
+                                        <td><span t-field="o.partner_id.email"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Teléfono:</strong></td>
+                                        <td><span t-field="o.partner_id.phone"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <h5>Detalles de la Membresía</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Plan:</strong></td>
+                                        <td><span t-field="o.plan_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tipo:</strong></td>
+                                        <td><span t-field="o.space_type"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estado:</strong></td>
+                                        <td><span t-field="o.state"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h5>Fechas</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Inicio:</strong></td>
+                                        <td><span t-field="o.date_start"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Fin:</strong></td>
+                                        <td><span t-field="o.date_end"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <h5>Créditos</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Otorgados:</strong></td>
+                                        <td><span t-field="o.credits_granted"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Usados:</strong></td>
+                                        <td><span t-field="o.credits_used"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Disponibles:</strong></td>
+                                        <td><span t-field="o.credits_remaining"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <t t-if="o.desk_id">
+                            <h5>Espacio Asignado (Coworking)</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Escritorio:</strong></td>
+                                    <td><span t-field="o.desk_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tipo:</strong></td>
+                                    <td><span t-field="o.desk_id.desk_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Planta:</strong></td>
+                                    <td><span t-field="o.desk_id.floor_id.name"/></td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <t t-if="o.bed_id">
+                            <h5>Espacio Asignado (Coliving)</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Cama:</strong></td>
+                                    <td><span t-field="o.bed_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Habitación:</strong></td>
+                                    <td><span t-field="o.bed_id.room_number"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Planta:</strong></td>
+                                    <td><span t-field="o.bed_id.floor_id.name"/></td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <t t-if="o.service_ids">
+                            <h5>Servicios Incluidos</h5>
+                            <ul>
+                                <t t-foreach="o.service_ids" t-as="service">
+                                    <li><span t-esc="service.name"/></li>
+                                </t>
+                            </ul>
+                        </t>
+
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <p>_________________________</p>
+                                <p>Firma del Responsable</p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p>Fecha de Emisión: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

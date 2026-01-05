@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extensión vista formulario de contacto -->
+    <record id="view_partner_form_cowork" model="ir.ui.view">
+        <field name="name">res.partner.form.cowork</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_memberships" type="object" 
+                        class="oe_stat_button" icon="fa-id-card"
+                        invisible="not is_cowork_member">
+                    <field name="membership_count" widget="statinfo" string="Membresías"/>
+                </button>
+                <button name="action_view_credits" type="object" 
+                        class="oe_stat_button" icon="fa-coins"
+                        invisible="not is_cowork_member">
+                    <field name="total_credits" widget="statinfo" string="Créditos"/>
+                </button>
+            </div>
+            <field name="category_id" position="after">
+                <field name="is_cowork_member"/>
+            </field>
+            <notebook position="inside">
+                <page string="Cowork" invisible="not is_cowork_member">
+                    <group>
+                        <group>
+                            <field name="preferred_space_type"/>
+                            <field name="active_membership_id"/>
+                        </group>
+                        <group>
+                            <field name="emergency_contact"/>
+                            <field name="emergency_phone"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Cowork">
+                        <field name="cowork_notes" nolabel="1"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

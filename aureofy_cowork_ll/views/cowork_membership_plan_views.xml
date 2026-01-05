@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_membership_plan_tree" model="ir.ui.view">
+        <field name="name">cowork.membership.plan.tree</field>
+        <field name="model">cowork.membership.plan</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="space_type"/>
+                <field name="duration_type"/>
+                <field name="duration_value"/>
+                <field name="price"/>
+                <field name="credits_included"/>
+                <field name="membership_count"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_membership_plan_form" model="ir.ui.view">
+        <field name="name">cowork.membership.plan.form</field>
+        <field name="model">cowork.membership.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_memberships" type="object" 
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="membership_count" widget="statinfo" string="Membresías"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivado" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del plan"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuración">
+                            <field name="code"/>
+                            <field name="space_type"/>
+                            <field name="duration_type"/>
+                            <field name="duration_value"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Precio y Créditos">
+                            <field name="price"/>
+                            <field name="credits_included"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="product_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Depósito de Seguridad">
+                            <field name="requires_deposit"/>
+                            <field name="deposit_amount" invisible="not requires_deposit"/>
+                        </group>
+                        <group string="Renovación">
+                            <field name="auto_renew"/>
+                            <field name="renewal_reminder_days"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Servicios Incluidos">
+                            <field name="included_service_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="service_type"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Políticas">
+                            <field name="policy_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="is_mandatory"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Descripción">
+                            <field name="description" nolabel="1" placeholder="Descripción del plan..."/>
+                        </page>
+                        <page string="Características">
+                            <field name="features" nolabel="1" placeholder="Características del plan..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_cowork_membership_plan_search" model="ir.ui.view">
+        <field name="name">cowork.membership.plan.search</field>
+        <field name="model">cowork.membership.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="coworking" string="Coworking" domain="[('space_type', '=', 'coworking')]"/>
+                <filter name="coliving" string="Coliving" domain="[('space_type', '=', 'coliving')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_space" string="Tipo de Espacio" context="{'group_by': 'space_type'}"/>
+                    <filter name="group_duration" string="Duración" context="{'group_by': 'duration_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_membership_plan" model="ir.actions.act_window">
+        <field name="name">Planes de Membresía</field>
+        <field name="res_model">cowork.membership.plan</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_cowork_membership_plan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo plan de membresía
+            </p>
+            <p>
+                Los planes definen el precio, duración y créditos para las membresías.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_membership_plan"
+              name="Planes de Membresía"
+              parent="menu_config_plans"
+              action="action_cowork_membership_plan"
+              sequence="10"/>
+</odoo>

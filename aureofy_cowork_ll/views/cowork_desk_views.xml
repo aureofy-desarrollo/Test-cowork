@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_desk_tree" model="ir.ui.view">
+        <field name="name">cowork.desk.tree</field>
+        <field name="model">cowork.desk</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'available'" 
+                  decoration-warning="state == 'reserved'"
+                  decoration-danger="state == 'occupied'"
+                  decoration-muted="state == 'maintenance'">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="desk_type"/>
+                <field name="floor_id"/>
+                <field name="city"/>
+                <field name="capacity"/>
+                <field name="price_per_month"/>
+                <field name="member_id"/>
+                <field name="state" widget="badge" 
+                       decoration-success="state == 'available'"
+                       decoration-warning="state == 'reserved'"
+                       decoration-danger="state == 'occupied'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_cowork_desk_kanban" model="ir.ui.view">
+        <field name="name">cowork.desk.kanban</field>
+        <field name="model">cowork.desk</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="desk_type"/>
+                <field name="floor_id"/>
+                <field name="state"/>
+                <field name="member_id"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('cowork.desk', 'image', record.id.raw_value)" 
+                                     alt="Escritorio" class="o_image_64_cover"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_tags_section">
+                                    <field name="desk_type"/>
+                                </div>
+                                <div>
+                                    <field name="floor_id"/>
+                                </div>
+                                <div t-if="record.member_id.value" class="text-muted">
+                                    <i class="fa fa-user"/> <field name="member_id"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_desk_form" model="ir.ui.view">
+        <field name="name">cowork.desk.form</field>
+        <field name="model">cowork.desk</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_set_available" type="object" string="Marcar Disponible"
+                            invisible="state == 'available'" class="btn-primary"/>
+                    <button name="action_set_maintenance" type="object" string="Mantenimiento"
+                            invisible="state == 'maintenance'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="available,reserved,occupied"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del escritorio"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="desk_type"/>
+                            <field name="floor_id"/>
+                            <field name="capacity"/>
+                        </group>
+                        <group>
+                            <field name="price_per_hour"/>
+                            <field name="price_per_day"/>
+                            <field name="price_per_month"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Asignación" invisible="state == 'available'">
+                            <field name="member_id"/>
+                            <field name="membership_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Comodidades">
+                            <field name="amenity_ids" widget="many2many_tags"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </page>
+                        <page string="Descripción">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_cowork_desk_search" model="ir.ui.view">
+        <field name="name">cowork.desk.search</field>
+        <field name="model">cowork.desk</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="floor_id"/>
+                <field name="city"/>
+                <field name="member_id"/>
+                <filter name="available" string="Disponibles" domain="[('state', '=', 'available')]"/>
+                <filter name="occupied" string="Ocupados" domain="[('state', '=', 'occupied')]"/>
+                <separator/>
+                <filter name="flexible" string="Flexibles" domain="[('desk_type', '=', 'flexible')]"/>
+                <filter name="private" string="Cabinas Privadas" domain="[('desk_type', '=', 'private_cabin')]"/>
+                <filter name="meeting" string="Salas de Reuniones" domain="[('desk_type', '=', 'meeting_room')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Tipo" context="{'group_by': 'desk_type'}"/>
+                    <filter name="group_floor" string="Planta" context="{'group_by': 'floor_id'}"/>
+                    <filter name="group_city" string="Ciudad" context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_desk" model="ir.actions.act_window">
+        <field name="name">Escritorios</field>
+        <field name="res_model">cowork.desk</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_cowork_desk_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo escritorio
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_desk"
+              name="Escritorios"
+              parent="menu_config_spaces"
+              action="action_cowork_desk"
+              sequence="20"/>
+</odoo>

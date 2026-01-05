@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_floor_tree" model="ir.ui.view">
+        <field name="name">cowork.floor.tree</field>
+        <field name="model">cowork.floor</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="building_name"/>
+                <field name="city"/>
+                <field name="desk_count"/>
+                <field name="bed_count"/>
+                <field name="active" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_floor_form" model="ir.ui.view">
+        <field name="name">cowork.floor.form</field>
+        <field name="model">cowork.floor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_desks" type="object" class="oe_stat_button" icon="fa-desktop">
+                            <field name="desk_count" widget="statinfo" string="Escritorios"/>
+                        </button>
+                        <button name="action_view_beds" type="object" class="oe_stat_button" icon="fa-bed">
+                            <field name="bed_count" widget="statinfo" string="Camas"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivado" bg_color="bg-danger" invisible="active"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="building_name"/>
+                            <field name="city"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Dirección">
+                        <field name="address" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_floor" model="ir.actions.act_window">
+        <field name="name">Plantas</field>
+        <field name="res_model">cowork.floor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva planta
+            </p>
+            <p>
+                Las plantas organizan los escritorios y camas de tu espacio de coworking.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_floor"
+              name="Plantas"
+              parent="menu_config_spaces"
+              action="action_cowork_floor"
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal: Lista de Membresías -->
+    <template id="portal_my_memberships" name="Mis Membresías">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mis Membresías</t>
+            </t>
+            
+            <t t-if="memberships">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Plan</th>
+                                <th>Tipo</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Créditos</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="memberships" t-as="membership">
+                                <tr>
+                                    <td>
+                                        <a t-att-href="'/my/membership/' + str(membership.id)">
+                                            <t t-esc="membership.name"/>
+                                        </a>
+                                    </td>
+                                    <td t-esc="membership.plan_id.name"/>
+                                    <td>
+                                        <span t-if="membership.space_type == 'coworking'" class="badge bg-primary">Coworking</span>
+                                        <span t-if="membership.space_type == 'coliving'" class="badge bg-info">Coliving</span>
+                                    </td>
+                                    <td t-esc="membership.date_start"/>
+                                    <td t-esc="membership.date_end"/>
+                                    <td t-esc="membership.credits_remaining"/>
+                                    <td>
+                                        <span t-if="membership.state == 'draft'" class="badge bg-secondary">Borrador</span>
+                                        <span t-if="membership.state == 'confirmed'" class="badge bg-info">Confirmada</span>
+                                        <span t-if="membership.state == 'active'" class="badge bg-success">Activa</span>
+                                        <span t-if="membership.state == 'expired'" class="badge bg-warning">Expirada</span>
+                                        <span t-if="membership.state == 'cancelled'" class="badge bg-danger">Cancelada</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a t-att-href="'/my/membership/' + str(membership.id)" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-eye"/> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <t t-call="portal.pager"/>
+            </t>
+            <t t-else="">
+                <div class="alert alert-info text-center">
+                    <p class="mb-0">No tiene membresías registradas.</p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Portal: Detalle de Membresía -->
+    <template id="portal_membership_detail" name="Detalle de Membresía">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="base.group_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=cowork.membership&amp;id=%s&amp;view_type=form' % membership.id"/>
+                </t>
+            </t>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white">
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                Membresía <span t-field="membership.name"/>
+                            </h4>
+                        </div>
+                        <div class="col text-end">
+                            <a t-att-href="'/my/membership/' + str(membership.id) + '/download'" 
+                               class="btn btn-primary">
+                                <i class="fa fa-download"/> Descargar PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Información del Plan</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Plan:</strong></td>
+                                    <td><span t-field="membership.plan_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tipo de Espacio:</strong></td>
+                                    <td>
+                                        <span t-if="membership.space_type == 'coworking'" class="badge bg-primary">Coworking</span>
+                                        <span t-if="membership.space_type == 'coliving'" class="badge bg-info">Coliving</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado:</strong></td>
+                                    <td>
+                                        <span t-if="membership.state == 'draft'" class="badge bg-secondary">Borrador</span>
+                                        <span t-if="membership.state == 'confirmed'" class="badge bg-info">Confirmada</span>
+                                        <span t-if="membership.state == 'active'" class="badge bg-success">Activa</span>
+                                        <span t-if="membership.state == 'expired'" class="badge bg-warning">Expirada</span>
+                                        <span t-if="membership.state == 'cancelled'" class="badge bg-danger">Cancelada</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Fechas</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Inicio:</strong></td>
+                                    <td><span t-field="membership.date_start"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fin:</strong></td>
+                                    <td><span t-field="membership.date_end"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Créditos</h5>
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h2 class="text-primary mb-0">
+                                        <span t-field="membership.credits_remaining"/>
+                                    </h2>
+                                    <p class="text-muted mb-0">Créditos Disponibles</p>
+                                    <small class="text-muted">
+                                        (Usados: <span t-field="membership.credits_used"/> / 
+                                        Otorgados: <span t-field="membership.credits_granted"/>)
+                                    </small>
+                                </div>
+                            </div>
+                            <p class="small text-muted mt-2">
+                                Use sus créditos para reservar salas de reuniones, salones de eventos y más.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Espacio Asignado</h5>
+                            <t t-if="membership.desk_id">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Escritorio:</strong></td>
+                                        <td><span t-field="membership.desk_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Planta:</strong></td>
+                                        <td><span t-field="membership.desk_id.floor_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <t t-if="membership.bed_id">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Cama:</strong></td>
+                                        <td><span t-field="membership.bed_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Habitación:</strong></td>
+                                        <td><span t-field="membership.bed_id.room_number"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Planta:</strong></td>
+                                        <td><span t-field="membership.bed_id.floor_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <t t-if="not membership.desk_id and not membership.bed_id">
+                                <p class="text-muted">Sin espacio asignado</p>
+                            </t>
+                        </div>
+                    </div>
+
+                    <t t-if="membership.service_ids">
+                        <h5>Servicios Incluidos</h5>
+                        <div class="row mb-4">
+                            <t t-foreach="membership.service_ids" t-as="service">
+                                <div class="col-md-4 mb-2">
+                                    <div class="card">
+                                        <div class="card-body py-2">
+                                            <i class="fa fa-check text-success"/> <span t-esc="service.name"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="/my/memberships" class="btn btn-outline-secondary">
+                    <i class="fa fa-arrow-left"/> Volver a Mis Membresías
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: Home Counter -->
+    <template id="portal_my_home_cowork" name="Portal My Home Cowork" 
+              inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/aureofy_cowork_ll/static/description/icon.png'"/>
+                <t t-set="title">Membresías</t>
+                <t t-set="url" t-value="'/my/memberships'"/>
+                <t t-set="text">Ver y gestionar tus membresías de coworking y coliving</t>
+                <t t-set="placeholder_count" t-value="'membership_count'"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

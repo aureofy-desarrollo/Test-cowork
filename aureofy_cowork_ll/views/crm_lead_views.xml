@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extensión vista formulario de lead -->
+    <record id="view_crm_lead_form_cowork" model="ir.ui.view">
+        <field name="name">crm.lead.form.cowork</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_create_membership" type="object" 
+                        string="Crear Membresía" class="btn-primary"
+                        invisible="not is_cowork_lead or membership_id"
+                        icon="fa-id-card"/>
+                <field name="membership_id" invisible="1"/>
+            </div>
+            <notebook position="inside">
+                <page string="Cowork/Coliving" invisible="not is_cowork_lead">
+                    <group>
+                        <group string="Tipo de Espacio">
+                            <field name="space_type"/>
+                            <field name="preferred_desk_type" invisible="space_type != 'coworking'"/>
+                            <field name="preferred_bed_type" invisible="space_type != 'coliving'"/>
+                        </group>
+                        <group string="Preferencias">
+                            <field name="preferred_start_date"/>
+                            <field name="city_preference"/>
+                            <field name="plan_id" domain="[('space_type', '=', space_type)]"/>
+                        </group>
+                    </group>
+                    <group string="Requisitos Especiales">
+                        <field name="special_requirements" nolabel="1"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_crm_lead_search_cowork" model="ir.ui.view">
+        <field name="name">crm.lead.search.cowork</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <filter name="myactivities" position="before">
+                <separator/>
+                <filter name="cowork_leads" string="Leads Cowork" 
+                        domain="[('is_cowork_lead', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+</odoo>

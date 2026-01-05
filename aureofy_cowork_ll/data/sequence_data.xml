@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Secuencia para Membresías -->
+    <record id="sequence_cowork_membership" model="ir.sequence">
+        <field name="name">Membresía Cowork</field>
+        <field name="code">cowork.membership</field>
+        <field name="prefix">MEM/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Secuencia para Solicitudes de Acceso -->
+    <record id="sequence_cowork_access_request" model="ir.sequence">
+        <field name="name">Solicitud de Acceso</field>
+        <field name="code">cowork.access.request</field>
+        <field name="prefix">ACC/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Secuencia para Depósitos -->
+    <record id="sequence_cowork_security_deposit" model="ir.sequence">
+        <field name="name">Depósito de Seguridad</field>
+        <field name="code">cowork.security.deposit</field>
+        <field name="prefix">DEP/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Cron para verificar vencimientos -->
+    <record id="cron_check_membership_expiry" model="ir.cron">
+        <field name="name">Cowork: Verificar Vencimientos de Membresías</field>
+        <field name="model_id" ref="model_cowork_membership"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

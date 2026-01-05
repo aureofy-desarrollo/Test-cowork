@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Formulario del Wizard -->
+    <record id="view_mass_mail_wizard_form" model="ir.ui.view">
+        <field name="name">cowork.mass.mail.wizard.form</field>
+        <field name="model">cowork.mass.mail.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envío Masivo de Email">
+                <group>
+                    <field name="membership_ids" widget="many2many_tags" readonly="1"/>
+                </group>
+                <group>
+                    <field name="use_template"/>
+                </group>
+                <group invisible="not use_template">
+                    <field name="template_id"/>
+                </group>
+                <group invisible="use_template">
+                    <field name="subject"/>
+                </group>
+                <group string="Contenido" invisible="use_template">
+                    <field name="body" nolabel="1"/>
+                </group>
+                <footer>
+                    <button name="action_send_mail" type="object" string="Enviar Emails" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción del Wizard -->
+    <record id="action_mass_mail_wizard" model="ir.actions.act_window">
+        <field name="name">Envío Masivo de Email</field>
+        <field name="res_model">cowork.mass.mail.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_cowork_membership"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

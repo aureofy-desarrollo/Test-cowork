@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_access_request_tree" model="ir.ui.view">
+        <field name="name">cowork.access.request.tree</field>
+        <field name="model">cowork.access.request</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'approved'" 
+                  decoration-danger="state == 'rejected'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="membership_id"/>
+                <field name="service_id"/>
+                <field name="date_scheduled"/>
+                <field name="payment_method"/>
+                <field name="credits_cost"/>
+                <field name="credits_available"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_cowork_access_request_kanban" model="ir.ui.view">
+        <field name="name">cowork.access.request.kanban</field>
+        <field name="model">cowork.access.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="service_id"/>
+                <field name="state"/>
+                <field name="payment_method"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div><field name="partner_id"/></div>
+                                <div><field name="service_id"/></div>
+                                <div class="text-muted">
+                                    <field name="date_scheduled"/>
+                                </div>
+                                <div>
+                                    <span t-if="record.payment_method.raw_value == 'credits'" class="badge bg-info">
+                                        Créditos
+                                    </span>
+                                    <span t-if="record.payment_method.raw_value == 'invoice'" class="badge bg-warning">
+                                        Factura
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Calendario -->
+    <record id="view_cowork_access_request_calendar" model="ir.ui.view">
+        <field name="name">cowork.access.request.calendar</field>
+        <field name="model">cowork.access.request</field>
+        <field name="arch" type="xml">
+            <calendar string="Solicitudes de Acceso" date_start="date_scheduled" color="service_type" mode="week">
+                <field name="partner_id"/>
+                <field name="service_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_access_request_form" model="ir.ui.view">
+        <field name="name">cowork.access.request.form</field>
+        <field name="model">cowork.access.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Enviar Solicitud"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve" type="object" string="Aprobar"
+                            invisible="state != 'pending'" class="btn-success"
+                            groups="aureofy_cowork_ll.group_cowork_manager"/>
+                    <button name="action_reject" type="object" string="Rechazar"
+                            invisible="state != 'pending'" class="btn-danger"
+                            groups="aureofy_cowork_ll.group_cowork_manager"/>
+                    <button name="action_cancel" type="object" string="Cancelar"
+                            invisible="state in ('cancelled', 'rejected')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Solicitud">
+                            <field name="membership_id"/>
+                            <field name="partner_id"/>
+                            <field name="service_id"/>
+                            <field name="service_type"/>
+                        </group>
+                        <group string="Programación">
+                            <field name="date_request"/>
+                            <field name="date_scheduled"/>
+                            <field name="duration_hours"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Pago">
+                            <field name="payment_method"/>
+                            <field name="credits_cost"/>
+                            <field name="credits_available"/>
+                            <field name="can_pay_with_credits" invisible="1"/>
+                            <field name="credits_used" invisible="state != 'approved' or payment_method != 'credits'"/>
+                            <field name="price" invisible="payment_method != 'invoice'"/>
+                            <field name="invoice_id" invisible="not invoice_id"/>
+                        </group>
+                        <group string="Gestión">
+                            <field name="user_id"/>
+                            <field name="rejection_reason" invisible="state != 'rejected'"/>
+                        </group>
+                    </group>
+                    <group string="Notas">
+                        <field name="notes" nolabel="1" placeholder="Notas adicionales..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_cowork_access_request_search" model="ir.ui.view">
+        <field name="name">cowork.access.request.search</field>
+        <field name="model">cowork.access.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="service_id"/>
+                <filter name="pending" string="Pendientes" domain="[('state', '=', 'pending')]"/>
+                <filter name="approved" string="Aprobadas" domain="[('state', '=', 'approved')]"/>
+                <filter name="today" string="Hoy" domain="[('date_scheduled', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('date_scheduled', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                    <filter name="group_service" string="Servicio" context="{'group_by': 'service_id'}"/>
+                    <filter name="group_date" string="Fecha" context="{'group_by': 'date_scheduled:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_access_request" model="ir.actions.act_window">
+        <field name="name">Solicitudes de Acceso</field>
+        <field name="res_model">cowork.access.request</field>
+        <field name="view_mode">tree,kanban,calendar,form</field>
+        <field name="search_view_id" ref="view_cowork_access_request_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay solicitudes de acceso pendientes
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_access_request"
+              name="Solicitudes de Acceso"
+              parent="menu_cowork_access"
+              action="action_cowork_access_request"
+              sequence="10"/>
+</odoo>

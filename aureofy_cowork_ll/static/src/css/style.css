@@ -1,0 +1,52 @@
+/* Estilos personalizados para Aureofy Cowork */
+
+.o_cowork_dashboard .o_graph_view {
+    min-height: 400px;
+}
+
+.o_cowork_membership_kanban .o_kanban_record {
+    border-left: 3px solid transparent;
+}
+
+.o_cowork_membership_kanban .o_kanban_record.o_kanban_record_active {
+    border-left-color: #28a745;
+}
+
+.o_cowork_membership_kanban .o_kanban_record.o_kanban_record_expired {
+    border-left-color: #ffc107;
+}
+
+/* Tarjeta de estadísticas */
+.o_cowork_stat_card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.o_cowork_stat_card .o_stat_value {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.o_cowork_stat_card .o_stat_label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Badge de créditos */
+.o_cowork_credits_badge {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Formulario de membresía */
+.o_cowork_membership_form .o_group_header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #667eea;
+}

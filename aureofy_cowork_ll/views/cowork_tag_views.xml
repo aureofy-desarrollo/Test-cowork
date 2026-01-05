@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_tag_tree" model="ir.ui.view">
+        <field name="name">cowork.tag.tree</field>
+        <field name="model">cowork.tag</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_tag" model="ir.actions.act_window">
+        <field name="name">Etiquetas</field>
+        <field name="res_model">cowork.tag</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_tag"
+              name="Etiquetas"
+              parent="menu_config_other"
+              action="action_cowork_tag"
+              sequence="20"/>
+</odoo>

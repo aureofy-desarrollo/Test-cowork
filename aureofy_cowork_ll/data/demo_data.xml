@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo: Plantas -->
+    <record id="demo_floor_1" model="cowork.floor">
+        <field name="name">Planta Baja</field>
+        <field name="code">PB</field>
+        <field name="building_name">Edificio Central</field>
+        <field name="city">Buenos Aires</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="demo_floor_2" model="cowork.floor">
+        <field name="name">Primer Piso</field>
+        <field name="code">P1</field>
+        <field name="building_name">Edificio Central</field>
+        <field name="city">Buenos Aires</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <!-- Demo: Servicios -->
+    <record id="demo_service_meeting" model="cowork.service">
+        <field name="name">Sala de Reuniones</field>
+        <field name="service_type">meeting_room</field>
+        <field name="is_paid">True</field>
+        <field name="price">50.00</field>
+        <field name="credits_cost">5</field>
+        <field name="allow_credit_payment">True</field>
+        <field name="requires_approval">True</field>
+    </record>
+
+    <record id="demo_service_event" model="cowork.service">
+        <field name="name">Salón de Eventos</field>
+        <field name="service_type">event_hall</field>
+        <field name="is_paid">True</field>
+        <field name="price">200.00</field>
+        <field name="credits_cost">20</field>
+        <field name="allow_credit_payment">True</field>
+        <field name="requires_approval">True</field>
+    </record>
+
+    <record id="demo_service_cafeteria" model="cowork.service">
+        <field name="name">Cafetería</field>
+        <field name="service_type">cafeteria</field>
+        <field name="is_paid">False</field>
+        <field name="requires_approval">False</field>
+    </record>
+
+    <record id="demo_service_locker" model="cowork.service">
+        <field name="name">Taquilla</field>
+        <field name="service_type">locker</field>
+        <field name="is_paid">True</field>
+        <field name="price">20.00</field>
+        <field name="credits_cost">2</field>
+        <field name="allow_credit_payment">True</field>
+        <field name="requires_approval">False</field>
+    </record>
+
+    <!-- Demo: Políticas -->
+    <record id="demo_policy_1" model="cowork.policy">
+        <field name="name">Normas de Convivencia</field>
+        <field name="space_type">both</field>
+        <field name="is_mandatory">True</field>
+        <field name="description"><![CDATA[
+            <p>Todos los miembros deben respetar las siguientes normas:</p>
+            <ul>
+                <li>Mantener el silencio en áreas de trabajo</li>
+                <li>No fumar en las instalaciones</li>
+                <li>Respetar los horarios de acceso</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <!-- Demo: Etiquetas -->
+    <record id="demo_tag_wifi" model="cowork.tag">
+        <field name="name">WiFi Alta Velocidad</field>
+        <field name="color">1</field>
+    </record>
+
+    <record id="demo_tag_24h" model="cowork.tag">
+        <field name="name">Acceso 24/7</field>
+        <field name="color">2</field>
+    </record>
+
+    <!-- Demo: Planes de Membresía -->
+    <record id="demo_plan_cowork_daily" model="cowork.membership.plan">
+        <field name="name">Coworking Diario</field>
+        <field name="space_type">coworking</field>
+        <field name="duration_type">daily</field>
+        <field name="duration_value">1</field>
+        <field name="price">25.00</field>
+        <field name="credits_included">2</field>
+    </record>
+
+    <record id="demo_plan_cowork_monthly" model="cowork.membership.plan">
+        <field name="name">Coworking Mensual</field>
+        <field name="space_type">coworking</field>
+        <field name="duration_type">monthly</field>
+        <field name="duration_value">1</field>
+        <field name="price">300.00</field>
+        <field name="credits_included">20</field>
+        <field name="included_service_ids" eval="[(4, ref('demo_service_cafeteria'))]"/>
+    </record>
+
+    <record id="demo_plan_coliving_monthly" model="cowork.membership.plan">
+        <field name="name">Coliving Mensual</field>
+        <field name="space_type">coliving</field>
+        <field name="duration_type">monthly</field>
+        <field name="duration_value">1</field>
+        <field name="price">800.00</field>
+        <field name="credits_included">30</field>
+        <field name="requires_deposit">True</field>
+        <field name="deposit_amount">400.00</field>
+        <field name="included_service_ids" eval="[(4, ref('demo_service_cafeteria'))]"/>
+    </record>
+
+    <!-- Demo: Paquetes de Créditos -->
+    <record id="demo_credit_package_10" model="cowork.credit.package">
+        <field name="name">Paquete 10 Créditos</field>
+        <field name="credits_amount">10</field>
+        <field name="price">25.00</field>
+    </record>
+
+    <record id="demo_credit_package_50" model="cowork.credit.package">
+        <field name="name">Paquete 50 Créditos</field>
+        <field name="credits_amount">50</field>
+        <field name="price">100.00</field>
+        <field name="discount_percentage">20</field>
+    </record>
+
+    <record id="demo_credit_package_100" model="cowork.credit.package">
+        <field name="name">Paquete 100 Créditos</field>
+        <field name="credits_amount">100</field>
+        <field name="price">175.00</field>
+        <field name="discount_percentage">30</field>
+    </record>
+</odoo>

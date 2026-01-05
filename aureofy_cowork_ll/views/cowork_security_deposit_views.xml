@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_security_deposit_tree" model="ir.ui.view">
+        <field name="name">cowork.security.deposit.tree</field>
+        <field name="model">cowork.security.deposit</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="membership_id"/>
+                <field name="amount"/>
+                <field name="date_paid"/>
+                <field name="date_returned"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record id="view_cowork_security_deposit_form" model="ir.ui.view">
+        <field name="name">cowork.security.deposit.form</field>
+        <field name="model">cowork.security.deposit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_paid" type="object" string="Marcar Pagado"
+                            invisible="state != 'pending'" class="btn-primary"/>
+                    <button name="action_return" type="object" string="Devolver"
+                            invisible="state != 'paid'" class="btn-success"/>
+                    <button name="action_withhold" type="object" string="Retener"
+                            invisible="state != 'paid'" class="btn-warning"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="membership_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="date_created"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="date_paid"/>
+                            <field name="date_returned"/>
+                        </group>
+                        <group>
+                            <field name="invoice_id"/>
+                            <field name="refund_id"/>
+                        </group>
+                    </group>
+                    <group string="Notas" invisible="state != 'withheld'">
+                        <field name="withhold_reason" nolabel="1"/>
+                    </group>
+                    <group string="Notas">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_security_deposit" model="ir.actions.act_window">
+        <field name="name">Depósitos de Seguridad</field>
+        <field name="res_model">cowork.security.deposit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_security_deposit"
+              name="Depósitos de Seguridad"
+              parent="menu_cowork_reports"
+              action="action_cowork_security_deposit"
+              sequence="30"/>
+</odoo>

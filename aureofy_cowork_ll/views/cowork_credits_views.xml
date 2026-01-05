@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista Créditos -->
+    <record id="view_cowork_credits_tree" model="ir.ui.view">
+        <field name="name">cowork.credits.tree</field>
+        <field name="model">cowork.credits</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="credits_amount > 0" decoration-danger="credits_amount &lt; 0">
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="membership_id" optional="show"/>
+                <field name="credits_type"/>
+                <field name="credits_amount"/>
+                <field name="description"/>
+                <field name="invoice_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario Créditos -->
+    <record id="view_cowork_credits_form" model="ir.ui.view">
+        <field name="name">cowork.credits.form</field>
+        <field name="model">cowork.credits</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="membership_id"/>
+                            <field name="credits_type"/>
+                        </group>
+                        <group>
+                            <field name="credits_amount"/>
+                            <field name="date"/>
+                        </group>
+                    </group>
+                    <group invisible="credits_type != 'purchased'">
+                        <group>
+                            <field name="price_per_credit"/>
+                            <field name="total_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="invoice_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Lista Paquetes -->
+    <record id="view_cowork_credit_package_tree" model="ir.ui.view">
+        <field name="name">cowork.credit.package.tree</field>
+        <field name="model">cowork.credit.package</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="credits_amount"/>
+                <field name="price"/>
+                <field name="price_per_credit"/>
+                <field name="discount_percentage"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Formulario Paquetes -->
+    <record id="view_cowork_credit_package_form" model="ir.ui.view">
+        <field name="name">cowork.credit.package.form</field>
+        <field name="model">cowork.credit.package</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="credits_amount"/>
+                            <field name="price"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="price_per_credit"/>
+                            <field name="discount_percentage"/>
+                            <field name="product_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Búsqueda Créditos -->
+    <record id="view_cowork_credits_search" model="ir.ui.view">
+        <field name="name">cowork.credits.search</field>
+        <field name="model">cowork.credits</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="membership_id"/>
+                <filter name="granted" string="Otorgados" domain="[('credits_type', '=', 'granted')]"/>
+                <filter name="purchased" string="Comprados" domain="[('credits_type', '=', 'purchased')]"/>
+                <filter name="used" string="Usados" domain="[('credits_type', '=', 'used')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_partner" string="Miembro" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_type" string="Tipo" context="{'group_by': 'credits_type'}"/>
+                    <filter name="group_month" string="Mes" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acciones -->
+    <record id="action_cowork_credits" model="ir.actions.act_window">
+        <field name="name">Historial de Créditos</field>
+        <field name="res_model">cowork.credits</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_cowork_credits_search"/>
+    </record>
+
+    <record id="action_cowork_credit_package" model="ir.actions.act_window">
+        <field name="name">Paquetes de Créditos</field>
+        <field name="res_model">cowork.credit.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un paquete de créditos
+            </p>
+            <p>
+                Los paquetes permiten a los miembros comprar créditos adicionales.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_credits_history"
+              name="Historial de Créditos"
+              parent="menu_cowork_credits"
+              action="action_cowork_credits"
+              sequence="10"/>
+
+    <menuitem id="menu_credit_packages"
+              name="Paquetes de Créditos"
+              parent="menu_cowork_credits"
+              action="action_cowork_credit_package"
+              sequence="20"/>
+</odoo>
