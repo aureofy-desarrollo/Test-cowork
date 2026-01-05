@@ -85,7 +85,7 @@ class CoworkMembership(models.Model):
     
     # Valoración
     rating_id = fields.Many2one('cowork.rating', string='Valoración')
-    rating = fields.Integer(related='rating_id.rating', string='Puntuación')
+    rating = fields.Selection(related='rating_id.rating', string='Valoración')
     
     # Notas
     notes = fields.Html(string='Notas Internas')
