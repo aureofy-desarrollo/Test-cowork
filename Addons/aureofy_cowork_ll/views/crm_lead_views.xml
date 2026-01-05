@@ -11,6 +11,7 @@
                         string="Crear Membresía" class="btn-primary"
                         invisible="not is_cowork_lead or membership_id"
                         icon="fa-id-card"/>
+                <field name="is_cowork_lead" invisible="1"/>
                 <field name="membership_id" invisible="1"/>
             </div>
             <notebook position="inside">
