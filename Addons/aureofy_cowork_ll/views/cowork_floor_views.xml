@@ -33,6 +33,7 @@
                             <field name="bed_count" widget="statinfo" string="Camas"/>
                         </button>
                     </div>
+                    <field name="active" invisible="1"/>
                     <widget name="web_ribbon" title="Archivado" bg_color="bg-danger" invisible="active"/>
                     <group>
                         <group>
