@@ -10,7 +10,7 @@
         <field name="print_report_name">'TarjetaMiembro-%s' % object.name</field>
         <field name="binding_model_id" ref="model_cowork_membership"/>
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="base.paperformat_us_ledger"/>
+
     </record>
 
     <!-- Template de la Tarjeta -->
