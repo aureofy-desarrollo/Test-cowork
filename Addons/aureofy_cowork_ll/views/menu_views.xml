@@ -43,6 +43,18 @@
               parent="menu_cowork_root"
               sequence="30"/>
 
+    <menuitem id="menu_report_membership_analysis"
+              name="Análisis de Membresías"
+              parent="menu_cowork_reports"
+              action="action_membership_analysis"
+              sequence="10"/>
+
+    <menuitem id="menu_report_access_analysis"
+              name="Análisis de Accesos"
+              parent="menu_cowork_reports"
+              action="action_access_request_analysis"
+              sequence="20"/>
+
     <menuitem id="menu_cowork_config"
               name="Configuración"
               parent="menu_cowork_root"

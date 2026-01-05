@@ -36,23 +36,5 @@
         <field name="context">{}</field>
     </record>
 
-    <!-- Menú de informes -->
-    <menuitem id="menu_report_membership_analysis"
-              name="Análisis de Membresías"
-              parent="menu_cowork_reports"
-              action="action_membership_analysis"
-              sequence="10"/>
 
-    <!-- Análisis de Solicitudes de Acceso -->
-    <record id="action_access_request_analysis" model="ir.actions.act_window">
-        <field name="name">Análisis de Solicitudes de Acceso</field>
-        <field name="res_model">cowork.access.request</field>
-        <field name="view_mode">pivot,graph</field>
-    </record>
-
-    <menuitem id="menu_report_access_analysis"
-              name="Análisis de Accesos"
-              parent="menu_cowork_reports"
-              action="action_access_request_analysis"
-              sequence="20"/>
 </odoo>
