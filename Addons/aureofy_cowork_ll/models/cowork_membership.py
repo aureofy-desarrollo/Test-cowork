@@ -204,7 +204,10 @@ class CoworkMembership(models.Model):
         self.ensure_one()
         
         if not self.plan_id.product_id:
-            raise UserError(_('El plan no tiene un producto configurado para facturación.'))
+            # Intentar crear el producto si falta
+            self.plan_id._create_or_update_product()
+            if not self.plan_id.product_id:
+                raise UserError(_('El plan no tiene un producto configurado para facturación.'))
         
         invoice_vals = {
             'move_type': 'out_invoice',
@@ -226,6 +229,42 @@ class CoworkMembership(models.Model):
             'name': 'Factura',
             'res_model': 'account.move',
             'res_id': invoice.id,
+            'view_mode': 'form',
+        }
+    
+    def action_create_subscription(self):
+        """Crear presupuesto/suscripción de venta"""
+        self.ensure_one()
+        
+        if not self.plan_id.product_id:
+            self.plan_id._create_or_update_product()
+            if not self.plan_id.product_id:
+                raise UserError(_('El plan no tiene un producto configurado.'))
+            
+        sale_order_vals = {
+            'partner_id': self.partner_id.id,
+            'date_order': fields.Datetime.now(),
+            'order_line': [(0, 0, {
+                'product_id': self.plan_id.product_id.id,
+                'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
+                'product_uom_qty': 1,
+                'price_unit': self.plan_id.price,
+            })],
+        }
+        
+        # Integración opcional con sale_subscription si existe el campo
+        if self.plan_id.duration_type in ['monthly', 'annual']:
+            # Nota: Esto es genérico, la implementación de suscripciones
+            # varía según la versión y módulos instalados
+            pass
+            
+        sale_order = self.env['sale.order'].create(sale_order_vals)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Presupuesto',
+            'res_model': 'sale.order',
+            'res_id': sale_order.id,
             'view_mode': 'form',
         }
     

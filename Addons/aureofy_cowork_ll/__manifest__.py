@@ -29,6 +29,7 @@
         'mail',
         'crm',
         'account',
+        'sale_management',
         'website',
         'portal',
         'contacts',

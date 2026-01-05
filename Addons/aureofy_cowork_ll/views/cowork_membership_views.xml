@@ -110,6 +110,8 @@
                             invisible="state != 'draft'" class="btn-primary"/>
                     <button name="action_create_invoice" type="object" string="Crear Factura"
                             invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="action_create_subscription" type="object" string="Crear Presupuesto/Suscripción"
+                            invisible="state != 'confirmed'" class="btn-primary"/>
                     <button name="action_activate" type="object" string="Activar"
                             invisible="state != 'confirmed'" class="btn-success"/>
                     <button name="action_renew" type="object" string="Renovar"

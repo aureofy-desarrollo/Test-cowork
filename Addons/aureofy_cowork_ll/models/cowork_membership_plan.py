@@ -82,6 +82,42 @@ class CoworkMembershipPlan(models.Model):
             'context': {'default_plan_id': self.id},
         }
     
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            record._create_or_update_product()
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if any(f in vals for f in ['name', 'price', 'product_id', 'currency_id']):
+            for record in self:
+                record._create_or_update_product()
+        return res
+
+    def _create_or_update_product(self):
+        """Crear o actualizar producto relacionado"""
+        self.ensure_one()
+        if not self.product_id:
+            # Crear producto si no existe
+            product = self.env['product.product'].create({
+                'name': self.name,
+                'type': 'service',
+                'list_price': self.price,
+                'currency_id': self.currency_id.id,
+                'detailed_type': 'service',
+                'taxes_id': False,  # Opcional: configurar impuestos por defecto
+            })
+            self.product_id = product.id
+        else:
+            # Actualizar producto existente
+            self.product_id.write({
+                'name': self.name,
+                'list_price': self.price,
+                'currency_id': self.currency_id.id,
+            })
+    
     def _get_duration_days(self):
         """Calcular la duración en días"""
         self.ensure_one()
@@ -94,3 +130,4 @@ class CoworkMembershipPlan(models.Model):
         elif self.duration_type == 'annual':
             return self.duration_value * 365
         return 0
+
