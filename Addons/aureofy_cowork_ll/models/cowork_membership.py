@@ -370,18 +370,49 @@ class CoworkMembership(models.Model):
         """Cron job para verificar vencimientos"""
         today = fields.Date.today()
         
-        # Expirar membresías vencidas
-        expired = self.search([
+        # Buscar expiradas
+        expired_memberships = self.search([
             ('state', '=', 'active'),
             ('date_end', '<', today),
         ])
-        expired.action_expire()
+
+        for membership in expired_memberships:
+            # Guardamos el plan y si tiene auto-renew antes de expirar
+            auto_renew = membership.plan_id.auto_renew
+            
+            # Expirar membresía actual (libera recursos)
+            membership.action_expire()
+            
+            if auto_renew:
+                # Renovar automáticamente
+                res = membership.action_renew()
+                if res and res.get('res_id'):
+                    new_membership = self.browse(res['res_id'])
+                    
+                    # Aceptar políticas implícitamente al renovar
+                    new_membership.write({'policies_accepted': True})
+                    
+                    try:
+                        # Confirmar (asigna recursos y créditos)
+                        new_membership.action_confirm()
+                        
+                        # Activar inmediatamente si es renovación continua?
+                        # Generalmente se espera el pago, pero si es auto-renovación
+                        # y tiene créditos, quizás se asume confianza o se genera factura.
+                        # Vamos a crear la suscripción/orden de venta para el cobro.
+                        new_membership.action_create_subscription()
+                        
+                        # Opcional: Notificar renovación
+                        # new_membership.message_post(body=_("Renovación automática exitosa."))
+                    except Exception as e:
+                        new_membership.message_post(body=_("Error en renovación automática: %s") % str(e))
         
-        # Enviar recordatorios de renovación
+        # Enviar recordatorios de renovación (para las que vencen en 7 días)
         reminder_date = today + relativedelta(days=7)
         to_remind = self.search([
             ('state', '=', 'active'),
             ('date_end', '=', reminder_date),
+            ('plan_id.auto_renew', '=', False) # Solo si no es automática? O avisar igual? Avisar igual.
         ])
         for membership in to_remind:
             membership.action_send_renewal_reminder()
