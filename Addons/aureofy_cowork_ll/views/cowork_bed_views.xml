@@ -44,7 +44,7 @@
                                 <div><field name="bed_type"/></div>
                                 <div>Hab. <field name="room_number"/> - <field name="floor_id"/></div>
                                 <div t-if="record.member_id.value" class="text-muted">
-                                    <i class="fa fa-user"/> <field name="member_id"/>
+                                    <i class="fa fa-user" title="Miembro"/> <field name="member_id"/>
                                 </div>
                             </div>
                         </div>

@@ -60,7 +60,7 @@ class CoworkMembership(models.Model):
     access_request_count = fields.Integer(compute='_compute_access_request_count')
     
     # Políticas
-    policy_ids = fields.Many2many('cowork.policy', string='Políticas Aceptadas')
+    policy_ids = fields.Many2many('cowork.policy', string='Políticas Acordadas')
     policies_accepted = fields.Boolean(string='Políticas Aceptadas', default=False)
     
     # Depósito de seguridad
@@ -81,7 +81,7 @@ class CoworkMembership(models.Model):
                                    default=lambda self: self.env.company.currency_id)
     
     # Valoración
-    rating_id = fields.Many2one('cowork.rating', string='Valoración')
+    rating_id = fields.Many2one('cowork.rating', string='Registro de Valoración')
     rating = fields.Selection(related='rating_id.rating', string='Valoración')
     
     # Notas
