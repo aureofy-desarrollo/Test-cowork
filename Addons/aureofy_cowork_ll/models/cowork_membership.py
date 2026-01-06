@@ -23,10 +23,7 @@ class CoworkMembership(models.Model):
     plan_id = fields.Many2one('cowork.membership.plan', string='Plan de Membresía',
                                required=True, tracking=True)
     
-    space_type = fields.Selection([
-        ('coworking', 'Coworking'),
-        ('coliving', 'Coliving'),
-    ], string='Tipo de Espacio', related='plan_id.space_type', store=True)
+    space_type = fields.Selection(string='Tipo de Espacio', related='plan_id.space_type', store=True)
     
     # Asignación de espacio
     desk_id = fields.Many2one('cowork.desk', string='Escritorio Asignado',

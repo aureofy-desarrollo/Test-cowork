@@ -52,7 +52,7 @@
                                 <div><field name="partner_id"/></div>
                                 <div><field name="plan_id"/></div>
                                 <div class="text-muted">
-                                    <i class="fa fa-coins"/> <field name="credits_remaining"/> créditos
+                                    <i class="fa fa-coins" title="Créditos"/> <field name="credits_remaining"/> créditos
                                 </div>
                             </div>
                         </div>
