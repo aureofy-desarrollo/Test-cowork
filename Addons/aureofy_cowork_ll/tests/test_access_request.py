@@ -42,6 +42,25 @@ class TestAccessRequest(TransactionCase):
         request.duration_hours = 0.5
         self.assertEqual(request.price, 25.0, "Price should be 25 for 0.5 hours")
 
+    def test_dynamic_credits(self):
+        """Test that credit cost is computed based on duration"""
+        # Set credit cost on service
+        self.service.credits_cost = 10
+        
+        request = self.AccessRequest.create({
+            'membership_id': self.membership.id,
+            'service_id': self.service.id,
+            'date_scheduled': datetime.now(),
+            'duration_hours': 1.0,
+        })
+        self.assertEqual(request.credits_cost, 10, "Credits should be 10 for 1 hour")
+
+        request.duration_hours = 2.0
+        self.assertEqual(request.credits_cost, 20, "Credits should be 20 for 2 hours")
+
+        request.duration_hours = 0.5
+        self.assertEqual(request.credits_cost, 5, "Credits should be 5 for 0.5 hours")
+
     def test_overlap_constraints(self):
         """Test prevention of double booking"""
         start_time = datetime.now().replace(microsecond=0)

@@ -44,7 +44,7 @@ class CoworkAccessRequest(models.Model):
     ], string='Método de Pago', default='credits')
     
     # Costos
-    credits_cost = fields.Integer(related='service_id.credits_cost', string='Costo en Créditos')
+    credits_cost = fields.Integer(string='Costo en Créditos', compute='_compute_credits_cost', store=True)
     credits_used = fields.Integer(string='Créditos Usados', default=0)
     
     price = fields.Monetary(string='Precio', compute='_compute_price', store=True)
@@ -104,6 +104,17 @@ class CoworkAccessRequest(models.Model):
             if record.service_id and record.service_id.price:
                 price = record.service_id.price * record.duration_hours
             record.price = price
+
+    @api.depends('service_id.credits_cost', 'duration_hours')
+    def _compute_credits_cost(self):
+        for record in self:
+            credits = 0
+            if record.service_id and record.service_id.credits_cost:
+                # Assuming simple multiplication like price. 
+                # service_id.credits_cost is likely "per hour" or "base cost". 
+                # Given the user request implies scaling by duration explicitly:
+                credits = int(record.service_id.credits_cost * record.duration_hours)
+            record.credits_cost = credits
 
     @api.constrains('service_id', 'date_scheduled', 'duration_hours', 'state')
     def _check_overlap(self):
