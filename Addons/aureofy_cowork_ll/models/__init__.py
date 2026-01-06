@@ -4,6 +4,7 @@ from . import cowork_floor
 from . import cowork_desk
 from . import cowork_bed
 from . import cowork_service
+from . import sale_order
 from . import cowork_policy
 from . import cowork_tag
 from . import cowork_membership_plan

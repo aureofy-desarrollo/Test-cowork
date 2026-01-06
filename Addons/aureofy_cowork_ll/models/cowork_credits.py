@@ -31,6 +31,7 @@ class CoworkCredits(models.Model):
     
     # Para compras de créditos
     invoice_id = fields.Many2one('account.move', string='Factura')
+    sale_id = fields.Many2one('sale.order', string='Orden de Venta')
     price_per_credit = fields.Monetary(string='Precio por Crédito', currency_field='currency_id')
     total_amount = fields.Monetary(string='Monto Total', compute='_compute_total_amount',
                                     currency_field='currency_id', store=True)
