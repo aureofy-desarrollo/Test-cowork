@@ -235,7 +235,7 @@
             </t>
         </xpath>
     </template>
-    </template>
+
 
     <template id="portal_buy_credits" name="Comprar Créditos">
         <t t-call="portal.portal_layout">
