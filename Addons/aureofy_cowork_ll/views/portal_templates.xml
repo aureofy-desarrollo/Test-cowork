@@ -9,6 +9,12 @@
                 <t t-set="title">Mis Membresías</t>
             </t>
             
+            <div class="mb-3 text-end">
+                <a href="/my/credits/buy" class="btn btn-primary">
+                    <i class="fa fa-plus"/> Comprar Créditos
+                </a>
+            </div>
+            
             <t t-if="memberships">
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -228,5 +234,28 @@
                 <t t-set="placeholder_count" t-value="'membership_count'"/>
             </t>
         </xpath>
+    </template>
+    </template>
+
+    <template id="portal_buy_credits" name="Comprar Créditos">
+        <t t-call="portal.portal_layout">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Comprar Créditos</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Adquiera más créditos para disfrutar de nuestros servicios.</p>
+                    <form action="/my/credits/buy/submit" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Cantidad de Créditos</label>
+                            <input type="number" class="form-control" name="amount" id="amount" required="required" min="1" value="10"/>
+                            <div class="form-text">Cada crédito permite reservar recursos como escritorios o salas.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Comprar Ahora</button>
+                    </form>
+                </div>
+            </div>
+        </t>
     </template>
 </odoo>
