@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class CoworkAccessRequest(models.Model):
@@ -46,7 +47,7 @@ class CoworkAccessRequest(models.Model):
     credits_cost = fields.Integer(related='service_id.credits_cost', string='Costo en Créditos')
     credits_used = fields.Integer(string='Créditos Usados', default=0)
     
-    price = fields.Monetary(related='service_id.price', string='Precio')
+    price = fields.Monetary(string='Precio', compute='_compute_price', store=True)
     currency_id = fields.Many2one('res.currency', string='Moneda',
                                    default=lambda self: self.env.company.currency_id)
     
@@ -95,6 +96,36 @@ class CoworkAccessRequest(models.Model):
                 self.payment_method = 'credits'
             else:
                 self.payment_method = 'invoice'
+
+    @api.depends('service_id.price', 'duration_hours')
+    def _compute_price(self):
+        for record in self:
+            price = 0.0
+            if record.service_id and record.service_id.price:
+                price = record.service_id.price * record.duration_hours
+            record.price = price
+
+    @api.constrains('service_id', 'date_scheduled', 'duration_hours', 'state')
+    def _check_overlap(self):
+        for record in self:
+            if record.state in ['rejected', 'cancelled'] or not record.date_scheduled:
+                continue
+            
+            start_date = record.date_scheduled
+            end_date = start_date + timedelta(hours=record.duration_hours)
+            
+            domain = [
+                ('id', '!=', record.id),
+                ('service_id', '=', record.service_id.id),
+                ('state', 'not in', ['rejected', 'cancelled']),
+                ('date_scheduled', '<', end_date),
+            ]
+            
+            overlap_candidates = self.search(domain)
+            for candidate in overlap_candidates:
+                candidate_end = candidate.date_scheduled + timedelta(hours=candidate.duration_hours)
+                if candidate_end > start_date:
+                    raise ValidationError(_('El servicio ya está reservado para este horario.'))
     
     def action_submit(self):
         """Enviar solicitud para aprobación"""
