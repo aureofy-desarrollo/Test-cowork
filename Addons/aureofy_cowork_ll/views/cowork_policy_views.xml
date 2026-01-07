@@ -33,9 +33,11 @@
                             <field name="active"/>
                         </group>
                     </group>
-                    <group string="Descripción">
-                        <field name="description" nolabel="1"/>
-                    </group>
+<notebook>
+                        <page string="Descripción">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
