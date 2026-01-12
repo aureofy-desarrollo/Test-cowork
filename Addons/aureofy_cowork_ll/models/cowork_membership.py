@@ -138,6 +138,19 @@ class CoworkMembership(models.Model):
     def _compute_credits(self):
         for record in self:
             record.credits_granted = record.plan_id.credits_included if record.plan_id else 0
+
+    def action_view_rented_floor(self):
+        self.ensure_one()
+        if not self.floor_id:
+            return True
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Piso Alquilado'),
+            'res_model': 'cowork.floor',
+            'view_mode': 'form',
+            'res_id': self.floor_id.id,
+            'target': 'current',
+        }
     
     @api.depends('access_request_ids.credits_used', 'access_request_ids.state')
     def _compute_credits_used(self):

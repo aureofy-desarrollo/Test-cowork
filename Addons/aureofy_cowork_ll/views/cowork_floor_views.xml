@@ -5,7 +5,7 @@
         <field name="name">cowork.floor.tree</field>
         <field name="model">cowork.floor</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'rented'">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="code"/>
@@ -60,11 +60,31 @@
         </field>
     </record>
 
+    <!-- Búsqueda -->
+    <record id="view_cowork_floor_search" model="ir.ui.view">
+        <field name="name">cowork.floor.search</field>
+        <field name="model">cowork.floor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="building_name"/>
+                <filter name="exclusive" string="Pisos Exclusivos" domain="[('is_exclusive', '=', True)]"/>
+                <filter name="rented" string="Alquilados" domain="[('state', '=', 'rented')]"/>
+                <filter name="available" string="Disponibles" domain="[('state', '=', 'available')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_building" string="Edificio" context="{'group_by': 'building_name'}"/>
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Acción -->
     <record id="action_cowork_floor" model="ir.actions.act_window">
         <field name="name">Plantas</field>
         <field name="res_model">cowork.floor</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_cowork_floor_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Crear una nueva planta

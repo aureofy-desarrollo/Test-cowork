@@ -134,6 +134,13 @@
                                 class="oe_stat_button" icon="fa-key">
                             <field name="access_request_count" widget="statinfo" string="Accesos"/>
                         </button>
+                        <button name="action_view_rented_floor" type="object" 
+                                class="oe_stat_button" icon="fa-building-o"
+                                invisible="not floor_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Piso Alquilado</span>
+                            </div>
+                        </button>
                     </div>
                     <field name="partner_image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
