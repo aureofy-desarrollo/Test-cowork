@@ -283,10 +283,14 @@ class CoworkMembership(models.Model):
         
         # Agregar línea de piso exclusivo si aplica
         if self.floor_id and self.floor_id.is_exclusive and self.floor_id.price_per_month > 0:
+            price_floor = self.floor_id.price_per_month
+            if self.plan_id.duration_type == 'annual':
+                price_floor *= 12
+                
             invoice_line_ids.append((0, 0, {
                 'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
                 'quantity': 1,
-                'price_unit': self.floor_id.price_per_month,
+                'price_unit': price_floor,
             }))
             
         invoice_vals = {
@@ -325,10 +329,14 @@ class CoworkMembership(models.Model):
         
         # Agregar línea de piso exclusivo si aplica
         if self.floor_id and self.floor_id.is_exclusive and self.floor_id.price_per_month > 0:
+            price_floor = self.floor_id.price_per_month
+            if self.plan_id.duration_type == 'annual':
+                price_floor *= 12
+                
             order_line.append((0, 0, {
                 'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
                 'product_uom_qty': 1,
-                'price_unit': self.floor_id.price_per_month,
+                'price_unit': price_floor,
             }))
             
         sale_order_vals = {
