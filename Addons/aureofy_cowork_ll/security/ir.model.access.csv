@@ -28,4 +28,6 @@ access_cowork_credit_package_manager,cowork.credit.package.manager,model_cowork_
 access_cowork_mass_mail_wizard_manager,cowork.mass.mail.wizard.manager,model_cowork_mass_mail_wizard,group_cowork_manager,1,1,1,1
 access_cowork_member_card_wizard_manager,cowork.member.card.wizard.manager,model_cowork_member_card_wizard,group_cowork_manager,1,1,1,1
 access_cowork_sell_credit_package_manager,cowork.sell.credit.package.manager,model_cowork_sell_credit_package,group_cowork_manager,1,1,1,1
+access_cowork_passes_user,cowork.passes.user,model_cowork_passes,group_cowork_user,1,0,0,0
+access_cowork_passes_manager,cowork.passes.manager,model_cowork_passes,group_cowork_manager,1,1,1,1
 
