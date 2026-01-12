@@ -168,15 +168,10 @@ class CoworkMembership(models.Model):
                 ).mapped('credits_used')
             )
     
-    @api.depends('credits_granted', 'credits_used')
+    @api.depends('partner_id', 'credits_granted', 'credits_used')
     def _compute_credits_remaining(self):
         for record in self:
-            # Incluir créditos adicionales comprados y renovaciones
-            additional_credits = sum(self.env['cowork.credits'].search([
-                ('partner_id', '=', record.partner_id.id),
-                ('credits_type', 'in', ['purchased', 'bonus', 'renewal']),
-            ]).mapped('credits_amount'))
-            record.credits_remaining = record.credits_granted + additional_credits - record.credits_used
+            record.credits_remaining = self.env['cowork.credits'].get_partner_balance(record.partner_id.id)
     
     @api.depends('plan_id.passes_included')
     def _compute_passes(self):
@@ -381,7 +376,7 @@ class CoworkMembership(models.Model):
     def action_expire(self):
         """Marcar membresía como expirada"""
         for record in self:
-            # Liberar espacio
+            # Liberar espacio y expirar créditos
             if record.desk_id:
                 record.desk_id.action_set_available()
             elif record.bed_id:
@@ -394,13 +389,16 @@ class CoworkMembership(models.Model):
                     'date_start': False,
                     'date_end': False,
                 })
+            
+            # Expirar créditos restantes de esta membresía
+            record._expire_remaining_credits()
             
             record.write({'state': 'expired'})
     
     def action_cancel(self):
         """Cancelar membresía"""
         for record in self:
-            # Liberar espacio
+            # Liberar espacio y expirar créditos
             if record.desk_id:
                 record.desk_id.action_set_available()
             elif record.bed_id:
@@ -413,6 +411,9 @@ class CoworkMembership(models.Model):
                     'date_start': False,
                     'date_end': False,
                 })
+            
+            # Expirar créditos restantes de esta membresía
+            record._expire_remaining_credits()
             
             record.write({'state': 'cancelled'})
     
@@ -499,12 +500,10 @@ class CoworkMembership(models.Model):
     def action_renew_monthly_benefits(self):
         """Renovar beneficios mensuales (Créditos, Pases)"""
         for record in self:
-            # 1. Renovar Créditos: Agregar créditos del plan nuevamente
-            # Nota: Esto suma al total otorgado. El cálculo de remaining debe considerar
-            # que los créditos "viejos" del plan quizás expiraron si no son acumulables.
-            # Según requerimiento: "se renuevan mensualmente". Asumimos reset o grant nuevo.
-            # Vamos a optar por GRANT nuevo para que quede registro.
-            
+            # 1. Expirar créditos restantes de la membresía (Non-cumulative)
+            record._expire_remaining_credits()
+
+            # 2. Renovar Créditos: Agregar créditos del plan nuevamente
             if record.plan_id.credits_included > 0:
                 self.env['cowork.credits'].create({
                     'partner_id': record.partner_id.id,
@@ -536,6 +535,22 @@ class CoworkMembership(models.Model):
             template.send_mail(self.id, force_send=True)
         return True
     
+    def _expire_remaining_credits(self):
+        """Expirar créditos restantes vinculados a la membresía"""
+        self.ensure_one()
+        membership_credits = self.env['cowork.credits'].search([
+            ('membership_id', '=', self.id)
+        ])
+        balance = sum(membership_credits.mapped('credits_amount'))
+        if balance > 0:
+            self.env['cowork.credits'].create({
+                'partner_id': self.partner_id.id,
+                'membership_id': self.id,
+                'credits_type': 'expired',
+                'credits_amount': -balance,
+                'description': _('Vencimiento de créditos no acumulables (Membresía %s)') % self.name,
+            })
+
     def _get_report_base_filename(self):
         self.ensure_one()
         return 'Membresia-%s' % self.name

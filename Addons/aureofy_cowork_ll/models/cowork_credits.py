@@ -58,27 +58,8 @@ class CoworkCredits(models.Model):
     @api.model
     def get_partner_balance(self, partner_id):
         """Obtener balance de créditos de un partner"""
-        # Filtrar créditos expirados
-        today = fields.Date.today()
-        # Nota: La lógica de 'used' no tiene expiration, los 'granted'/'purchased' sí.
-        # Es complejo calcular balance con expiración sin FIFO.
-        # Simplificación: Sumar todo lo que no tenga fecha de expiración O fecha futura.
-        # Y restar todo lo usado.
-        
-        # Mejor enfoque: Calcular créditos positivos válidos y restar negativos.
         credits = self.search([('partner_id', '=', partner_id)])
-        
-        valid_credits = 0
-        used_credits = 0
-        
-        for credit in credits:
-            if credit.credits_amount > 0:
-                if not credit.date_expiration or credit.date_expiration >= today:
-                    valid_credits += credit.credits_amount
-            else:
-                used_credits += abs(credit.credits_amount)
-                
-        return valid_credits - used_credits
+        return sum(credits.mapped('credits_amount')) or 0
     
     @api.model
     def purchase_credits(self, partner_id, amount, price_per_credit, validity_years=1):
