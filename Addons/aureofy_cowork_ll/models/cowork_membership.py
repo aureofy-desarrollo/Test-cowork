@@ -146,6 +146,14 @@ class CoworkMembership(models.Model):
                 ).mapped('credits_used')
             )
     
+    @api.depends('credits_granted', 'credits_used')
+    def _compute_credits_remaining(self):
+        for record in self:
+            # Incluir créditos adicionales comprados y renovaciones
+            additional_credits = sum(self.env['cowork.credits'].search([
+                ('partner_id', '=', record.partner_id.id),
+                ('credits_type', 'in', ['purchased', 'bonus', 'renewal']),
+            ]).mapped('credits_amount'))
             record.credits_remaining = record.credits_granted + additional_credits - record.credits_used
     
     @api.depends('plan_id.passes_included')
