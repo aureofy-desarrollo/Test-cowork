@@ -55,6 +55,18 @@
               action="action_access_request_analysis"
               sequence="20"/>
 
+    <menuitem id="menu_report_rented_floors"
+              name="Pisos Alquilados"
+              parent="menu_cowork_reports"
+              action="action_report_rented_floors"
+              sequence="30"/>
+
+    <menuitem id="menu_report_rented_desks"
+              name="Escritorios Alquilados"
+              parent="menu_cowork_reports"
+              action="action_report_rented_desks"
+              sequence="40"/>
+
     <menuitem id="menu_cowork_config"
               name="Configuración"
               parent="menu_cowork_root"

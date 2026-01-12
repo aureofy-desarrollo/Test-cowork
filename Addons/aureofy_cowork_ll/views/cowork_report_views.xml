@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista Pisos Alquilados -->
+    <record id="view_cowork_floor_rented_tree" model="ir.ui.view">
+        <field name="name">cowork.floor.rented.tree</field>
+        <field name="model">cowork.floor</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="name"/>
+                <field name="building_name"/>
+                <field name="member_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción Pisos Alquilados -->
+    <record id="action_report_rented_floors" model="ir.actions.act_window">
+        <field name="name">Pisos Alquilados</field>
+        <field name="res_model">cowork.floor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'rented')]</field>
+        <field name="view_id" ref="view_cowork_floor_rented_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay pisos alquilados actualmente.
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Lista Escritorios Alquilados -->
+    <record id="view_cowork_desk_rented_tree" model="ir.ui.view">
+        <field name="name">cowork.desk.rented.tree</field>
+        <field name="model">cowork.desk</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="name"/>
+                <field name="floor_id"/>
+                <field name="desk_type"/>
+                <field name="member_id"/>
+                <field name="membership_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Acción Escritorios Alquilados -->
+    <record id="action_report_rented_desks" model="ir.actions.act_window">
+        <field name="name">Escritorios Alquilados</field>
+        <field name="res_model">cowork.desk</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'in', ('occupied', 'reserved'))]</field>
+        <field name="view_id" ref="view_cowork_desk_rented_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay escritorios alquilados actualmente.
+            </p>
+        </field>
+    </record>
+</odoo>

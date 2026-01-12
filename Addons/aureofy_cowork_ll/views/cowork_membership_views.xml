@@ -162,7 +162,9 @@
                                    domain="[('state', '=', 'available')]"/>
                             <field name="bed_id" invisible="space_type != 'coliving'"
                                    domain="[('state', '=', 'available')]"/>
-                            <field name="floor_id" domain="[('is_exclusive', '=', True), ('state', '=', 'available')]"/>
+                            <field name="allows_exclusive_floor" invisible="1"/>
+                            <field name="floor_id" invisible="not allows_exclusive_floor"
+                                   domain="[('is_exclusive', '=', True), ('state', '=', 'available')]"/>
                         </group>
                     </group>
                     <group>

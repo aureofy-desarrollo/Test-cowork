@@ -116,3 +116,25 @@ class TestCoworkFeatures(TransactionCase):
         # Check Floor Release
         self.assertEqual(floor.state, 'available')
         self.assertFalse(floor.member_id)
+
+    def test_exclusive_floor_validation_error(self):
+        # Create Floor
+        floor = self.CoworkFloor.create({
+            'name': 'Exclusive Floor 2',
+            'is_exclusive': True,
+        })
+        
+        # Create Regular Plan (no exclusive floor allowed)
+        regular_plan = self.CoworkPlan.create({
+            'name': 'Regular Plan',
+            'allows_exclusive_floor': False,
+        })
+        
+        # Try to create membership with floor_id - should raise ValidationError
+        with self.assertRaises(ValidationError):
+            self.CoworkMembership.create({
+                'partner_id': self.partner.id,
+                'plan_id': regular_plan.id,
+                'floor_id': floor.id,
+                'date_start': fields.Date.today(),
+            })

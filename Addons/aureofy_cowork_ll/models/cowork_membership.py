@@ -32,6 +32,13 @@ class CoworkMembership(models.Model):
                               domain=[('state', '=', 'available')])
     floor_id = fields.Many2one('cowork.floor', string='Piso Exclusivo',
                                 domain=[('is_exclusive', '=', True), ('state', '=', 'available')])
+    allows_exclusive_floor = fields.Boolean(related='plan_id.allows_exclusive_floor', readonly=True)
+
+    @api.constrains('floor_id', 'plan_id')
+    def _check_floor_allowed(self):
+        for record in self:
+            if record.floor_id and not record.plan_id.allows_exclusive_floor:
+                raise ValidationError(_('El plan seleccionado no permite el alquiler de pisos exclusivos.'))
     
     # Fechas
     date_start = fields.Date(string='Fecha de Inicio', required=True, tracking=True)
