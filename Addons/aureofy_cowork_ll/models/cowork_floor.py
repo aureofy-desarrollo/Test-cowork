@@ -5,7 +5,7 @@ from odoo import models, fields, api
 
 class CoworkFloor(models.Model):
     _name = 'cowork.floor'
-    _description = 'Planta/Piso del Espacio'
+    _description = 'Piso del Espacio'
     _order = 'sequence, name'
 
     name = fields.Char(string='Nombre', required=True)
@@ -14,9 +14,6 @@ class CoworkFloor(models.Model):
     building_name = fields.Char(string='Edificio')
     address = fields.Text(string='Dirección')
     city = fields.Char(string='Ciudad')
-    
-    desk_ids = fields.One2many('cowork.desk', 'floor_id', string='Escritorios')
-    bed_ids = fields.One2many('cowork.bed', 'floor_id', string='Camas')
     
     desk_count = fields.Integer(string='Nº Escritorios', compute='_compute_counts')
     bed_count = fields.Integer(string='Nº Camas', compute='_compute_counts')

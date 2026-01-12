@@ -19,7 +19,7 @@ class CoworkDesk(models.Model):
         ('hot_desk', 'Hot Desk'),
     ], string='Tipo de Escritorio', required=True, default='flexible', tracking=True)
     
-    floor_id = fields.Many2one('cowork.floor', string='Planta', required=True, 
+    floor_id = fields.Many2one('cowork.floor', string='Piso', required=True, 
                                 ondelete='restrict')
     
     capacity = fields.Integer(string='Capacidad', default=1, 

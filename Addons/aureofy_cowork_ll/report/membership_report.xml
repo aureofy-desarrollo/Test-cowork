@@ -105,7 +105,7 @@
                                     <td><span t-field="o.desk_id.desk_type"/></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Planta:</strong></td>
+                                    <td><strong>Piso:</strong></td>
                                     <td><span t-field="o.desk_id.floor_id.name"/></td>
                                 </tr>
                             </table>
@@ -123,7 +123,7 @@
                                     <td><span t-field="o.bed_id.room_number"/></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Planta:</strong></td>
+                                    <td><strong>Piso:</strong></td>
                                     <td><span t-field="o.bed_id.floor_id.name"/></td>
                                 </tr>
                             </table>

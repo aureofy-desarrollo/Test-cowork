@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Demo: Plantas -->
+    <!-- Demo: Pisos -->
     <record id="demo_floor_1" model="cowork.floor">
-        <field name="name">Planta Baja</field>
+        <field name="name">Piso Bajo</field>
         <field name="code">PB</field>
         <field name="building_name">Edificio Central</field>
         <field name="city">Buenos Aires</field>

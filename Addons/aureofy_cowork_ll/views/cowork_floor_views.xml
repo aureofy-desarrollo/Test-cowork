@@ -82,23 +82,24 @@
 
     <!-- Acción -->
     <record id="action_cowork_floor" model="ir.actions.act_window">
-        <field name="name">Plantas</field>
+        <field name="name">Pisos</field>
         <field name="res_model">cowork.floor</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_cowork_floor_tree"/>
         <field name="search_view_id" ref="view_cowork_floor_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Crear una nueva planta
+                Crear un nuevo piso
             </p>
             <p>
-                Las plantas organizan los escritorios y camas de tu espacio de coworking.
+                Los pisos organizan los escritorios y camas de tu espacio de coworking.
             </p>
         </field>
     </record>
 
     <!-- Menú -->
     <menuitem id="menu_cowork_floor"
-              name="Plantas"
+              name="Pisos"
               parent="menu_config_spaces"
               action="action_cowork_floor"
               sequence="10"/>

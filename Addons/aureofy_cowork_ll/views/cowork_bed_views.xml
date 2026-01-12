@@ -131,7 +131,7 @@
                 <group expand="0" string="Agrupar por">
                     <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
                     <filter name="group_type" string="Tipo" context="{'group_by': 'bed_type'}"/>
-                    <filter name="group_floor" string="Planta" context="{'group_by': 'floor_id'}"/>
+                    <filter name="group_floor" string="Piso" context="{'group_by': 'floor_id'}"/>
                 </group>
             </search>
         </field>

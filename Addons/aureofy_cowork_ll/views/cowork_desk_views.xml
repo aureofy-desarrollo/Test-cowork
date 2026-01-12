@@ -148,7 +148,7 @@
                 <group expand="0" string="Agrupar por">
                     <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
                     <filter name="group_type" string="Tipo" context="{'group_by': 'desk_type'}"/>
-                    <filter name="group_floor" string="Planta" context="{'group_by': 'floor_id'}"/>
+                    <filter name="group_floor" string="Piso" context="{'group_by': 'floor_id'}"/>
                     <filter name="group_city" string="Ciudad" context="{'group_by': 'city'}"/>
                 </group>
             </search>
@@ -160,6 +160,7 @@
         <field name="name">Escritorios</field>
         <field name="res_model">cowork.desk</field>
         <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="view_cowork_desk_tree"/>
         <field name="search_view_id" ref="view_cowork_desk_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

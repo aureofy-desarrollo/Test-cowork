@@ -19,7 +19,7 @@ class CoworkBed(models.Model):
         ('private_room', 'Habitación Privada'),
     ], string='Tipo de Cama', required=True, default='single', tracking=True)
     
-    floor_id = fields.Many2one('cowork.floor', string='Planta', required=True,
+    floor_id = fields.Many2one('cowork.floor', string='Piso', required=True,
                                 ondelete='restrict')
     room_number = fields.Char(string='Número de Habitación')
     

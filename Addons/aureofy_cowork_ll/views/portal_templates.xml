@@ -170,7 +170,7 @@
                                         <td><span t-field="membership.desk_id.name"/></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Planta:</strong></td>
+                                        <td><strong>Piso:</strong></td>
                                         <td><span t-field="membership.desk_id.floor_id.name"/></td>
                                     </tr>
                                 </table>
@@ -186,7 +186,7 @@
                                         <td><span t-field="membership.bed_id.room_number"/></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Planta:</strong></td>
+                                        <td><strong>Piso:</strong></td>
                                         <td><span t-field="membership.bed_id.floor_id.name"/></td>
                                     </tr>
                                 </table>
