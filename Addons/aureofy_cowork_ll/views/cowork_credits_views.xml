@@ -89,7 +89,7 @@
                 <header>
                     <button name="%(aureofy_cowork_ll.action_cowork_sell_credit_package)d" 
                             string="Vender Paquete" type="action" class="btn-primary"
-                            context="{'default_package_id': active_id}"/>
+                            context="{'default_package_id': id}"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" title="Archivado" bg_color="bg-danger" invisible="active"/>
