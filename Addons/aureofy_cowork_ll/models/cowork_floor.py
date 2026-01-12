@@ -25,6 +25,10 @@ class CoworkFloor(models.Model):
     is_exclusive = fields.Boolean(string='Es Exclusivo', default=False,
                                    help='Si es verdadero, el piso se alquila completo a un solo miembro.')
     
+    price_per_month = fields.Monetary(string='Precio por Mes', currency_field='currency_id')
+    currency_id = fields.Many2one('res.currency', string='Moneda',
+                                   default=lambda self: self.env.company.currency_id)
+    
     state = fields.Selection([
         ('available', 'Disponible'),
         ('rented', 'Alquilado'),

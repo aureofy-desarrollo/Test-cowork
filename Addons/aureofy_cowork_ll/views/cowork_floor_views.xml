@@ -42,6 +42,8 @@
                             <field name="code"/>
                             <field name="sequence"/>
                             <field name="is_exclusive"/>
+                            <field name="price_per_month" invisible="not is_exclusive"/>
+                            <field name="currency_id" invisible="1"/>
                             <field name="state" invisible="not is_exclusive"/>
                             <field name="member_id" invisible="not is_exclusive or state != 'rented'"/>
                             <field name="date_start" invisible="not is_exclusive or state != 'rented'"/>
