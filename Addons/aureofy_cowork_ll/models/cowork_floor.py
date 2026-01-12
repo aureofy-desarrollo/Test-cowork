@@ -15,6 +15,9 @@ class CoworkFloor(models.Model):
     address = fields.Text(string='Dirección')
     city = fields.Char(string='Ciudad')
     
+    desk_ids = fields.One2many('cowork.desk', 'floor_id', string='Escritorios')
+    bed_ids = fields.One2many('cowork.bed', 'floor_id', string='Camas')
+
     desk_count = fields.Integer(string='Nº Escritorios', compute='_compute_counts')
     bed_count = fields.Integer(string='Nº Camas', compute='_compute_counts')
     
