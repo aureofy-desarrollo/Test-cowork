@@ -69,6 +69,10 @@ class CoworkMembershipPlan(models.Model):
     call_room_hours_included = fields.Integer(string='Horas de Call Room Incluidas (Mes)', default=0,
                                                help='Horas de uso de cabinas telefónicas incluidas por mes.')
 
+    # Configuración de Pisos Exclusivos
+    allows_exclusive_floor = fields.Boolean(string='Permite Piso Exclusivo', default=False,
+                                             help='Si es verdadero, esta membresía permite alquilar un piso completo de forma exclusiva.')
+
     company_id = fields.Many2one('res.company', string='Compañía',
                                   default=lambda self: self.env.company)
     

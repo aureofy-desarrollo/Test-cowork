@@ -80,3 +80,39 @@ class TestCoworkFeatures(TransactionCase):
         
         balance = self.CoworkCredits.get_partner_balance(self.partner.id)
         self.assertEqual(balance, 50, "Valid credits should be counted")
+
+    def test_exclusive_floor_membership(self):
+        # Create Floor
+        floor = self.CoworkFloor.create({
+            'name': 'Exclusive Floor 1',
+            'is_exclusive': True,
+        })
+        
+        # Create Plan
+        exclusive_plan = self.CoworkPlan.create({
+            'name': 'Exclusive Plan',
+            'allows_exclusive_floor': True,
+            'price': 5000.0,
+        })
+        
+        # Create Membership
+        membership = self.CoworkMembership.create({
+            'partner_id': self.partner.id,
+            'plan_id': exclusive_plan.id,
+            'floor_id': floor.id,
+            'date_start': fields.Date.today(),
+        })
+        
+        # Confirm Membership
+        membership.action_confirm()
+        
+        # Check Floor Status
+        self.assertEqual(floor.state, 'rented')
+        self.assertEqual(floor.member_id, self.partner)
+        
+        # Expire Membership
+        membership.action_expire()
+        
+        # Check Floor Release
+        self.assertEqual(floor.state, 'available')
+        self.assertFalse(floor.member_id)

@@ -30,6 +30,8 @@ class CoworkMembership(models.Model):
                                domain=[('state', '=', 'available')])
     bed_id = fields.Many2one('cowork.bed', string='Cama Asignada',
                               domain=[('state', '=', 'available')])
+    floor_id = fields.Many2one('cowork.floor', string='Piso Exclusivo',
+                                domain=[('is_exclusive', '=', True), ('state', '=', 'available')])
     
     # Fechas
     date_start = fields.Date(string='Fecha de Inicio', required=True, tracking=True)
@@ -218,6 +220,18 @@ class CoworkMembership(models.Model):
                     'membership_id': record.id,
                 })
             
+            # Asignar Piso Exclusivo
+            if record.plan_id.allows_exclusive_floor and record.floor_id:
+                if record.floor_id.state != 'available':
+                     raise UserError(_('El piso seleccionado ya no está disponible.'))
+                
+                record.floor_id.write({
+                    'state': 'rented',
+                    'member_id': record.partner_id.id,
+                    'date_start': record.date_start,
+                    'date_end': record.date_end,
+                })
+            
             record.write({'state': 'confirmed'})
             
             # Registrar créditos otorgados
@@ -311,6 +325,9 @@ class CoworkMembership(models.Model):
             elif record.bed_id:
                 record.bed_id.write({'state': 'occupied'})
             
+            # Piso exclusivo ya se marca como 'rented' en confirm, no cambia estado extra en active?
+            # En cowork_floor definimos state: available, rented, maintenance. 'rented' es correcto.
+            
             record.write({'state': 'active'})
     
     def action_expire(self):
@@ -322,6 +339,14 @@ class CoworkMembership(models.Model):
             elif record.bed_id:
                 record.bed_id.action_set_available()
             
+            if record.floor_id:
+                record.floor_id.write({
+                    'state': 'available',
+                    'member_id': False,
+                    'date_start': False,
+                    'date_end': False,
+                })
+            
             record.write({'state': 'expired'})
     
     def action_cancel(self):
@@ -332,6 +357,14 @@ class CoworkMembership(models.Model):
                 record.desk_id.action_set_available()
             elif record.bed_id:
                 record.bed_id.action_set_available()
+            
+            if record.floor_id:
+                record.floor_id.write({
+                    'state': 'available',
+                    'member_id': False,
+                    'date_start': False,
+                    'date_end': False,
+                })
             
             record.write({'state': 'cancelled'})
     
