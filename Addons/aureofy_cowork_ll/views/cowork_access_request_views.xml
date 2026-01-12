@@ -114,7 +114,7 @@
                     </group>
                     <group>
                         <group string="Pago">
-                            <field name="payment_method"/>
+                            <field name="payment_method" readonly="is_guest"/>
                             <field name="credits_cost" invisible="payment_method != 'credits'"/>
                             <field name="credits_available" invisible="payment_method != 'credits'"/>
                             <field name="passes_available" invisible="payment_method != 'passes'"/>

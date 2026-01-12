@@ -153,7 +153,9 @@ class CoworkAccessRequest(models.Model):
             is_valid_pass_service = self.service_type in ['shared_space', 'hot_desk']
             can_use_pass = (is_valid_pass_service or self.is_guest) and self.membership_id.passes_remaining > 0
             
-            if not self.service_id.is_paid:
+            if self.is_guest:
+                self.payment_method = 'passes'
+            elif not self.service_id.is_paid:
                 self.payment_method = 'free'
             elif self.can_pay_with_hours:
                 self.payment_method = 'call_room_hours'
@@ -221,6 +223,12 @@ class CoworkAccessRequest(models.Model):
             # Si hay un piso Exclusive Rented, nadie más debería poder reservar recursos ahí.
             pass
     
+    @api.constrains('is_guest', 'payment_method')
+    def _check_guest_payment(self):
+        for record in self:
+            if record.is_guest and record.payment_method != 'passes':
+                raise ValidationError(_('Las solicitudes para invitados solo pueden ser pagadas con Pases de Acceso.'))
+
     def action_submit(self):
         """Enviar solicitud para aprobación"""
         for record in self:
