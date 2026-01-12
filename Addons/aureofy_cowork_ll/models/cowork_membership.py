@@ -274,16 +274,26 @@ class CoworkMembership(models.Model):
             if not self.plan_id.product_id:
                 raise UserError(_('El plan no tiene un producto configurado para facturación.'))
         
+        invoice_line_ids = [(0, 0, {
+            'product_id': self.plan_id.product_id.id,
+            'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
+            'quantity': 1,
+            'price_unit': self.plan_id.price,
+        })]
+        
+        # Agregar línea de piso exclusivo si aplica
+        if self.floor_id and self.floor_id.is_exclusive and self.floor_id.price_per_month > 0:
+            invoice_line_ids.append((0, 0, {
+                'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
+                'quantity': 1,
+                'price_unit': self.floor_id.price_per_month,
+            }))
+            
         invoice_vals = {
             'move_type': 'out_invoice',
             'partner_id': self.partner_id.id,
             'invoice_date': fields.Date.today(),
-            'invoice_line_ids': [(0, 0, {
-                'product_id': self.plan_id.product_id.id,
-                'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
-                'quantity': 1,
-                'price_unit': self.plan_id.price,
-            })],
+            'invoice_line_ids': invoice_line_ids,
         }
         
         invoice = self.env['account.move'].create(invoice_vals)
@@ -306,15 +316,25 @@ class CoworkMembership(models.Model):
             if not self.plan_id.product_id:
                 raise UserError(_('El plan no tiene un producto configurado.'))
             
+        order_line = [(0, 0, {
+            'product_id': self.plan_id.product_id.id,
+            'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
+            'product_uom_qty': 1,
+            'price_unit': self.plan_id.price,
+        })]
+        
+        # Agregar línea de piso exclusivo si aplica
+        if self.floor_id and self.floor_id.is_exclusive and self.floor_id.price_per_month > 0:
+            order_line.append((0, 0, {
+                'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
+                'product_uom_qty': 1,
+                'price_unit': self.floor_id.price_per_month,
+            }))
+            
         sale_order_vals = {
             'partner_id': self.partner_id.id,
             'date_order': fields.Datetime.now(),
-            'order_line': [(0, 0, {
-                'product_id': self.plan_id.product_id.id,
-                'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
-                'product_uom_qty': 1,
-                'price_unit': self.plan_id.price,
-            })],
+            'order_line': order_line,
         }
         
         # Integración opcional con sale_subscription si existe el campo
