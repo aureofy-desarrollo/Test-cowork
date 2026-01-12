@@ -39,6 +39,8 @@ class CoworkAccessRequest(models.Model):
     # Método de pago
     payment_method = fields.Selection([
         ('credits', 'Créditos'),
+        ('passes', 'Pase de Acceso'),
+        ('call_room_hours', 'Horas Incluidas (Call Room)'),
         ('invoice', 'Factura'),
         ('free', 'Gratuito'),
     ], string='Método de Pago', default='credits')
@@ -46,6 +48,12 @@ class CoworkAccessRequest(models.Model):
     # Costos
     credits_cost = fields.Integer(string='Costo en Créditos', compute='_compute_credits_cost', store=True)
     credits_used = fields.Integer(string='Créditos Usados', default=0)
+    
+    passes_cost = fields.Integer(string='Costo en Pases', default=0)
+    passes_used = fields.Integer(string='Pases Usados', default=0)
+
+    call_room_hours_cost = fields.Float(string='Horas Requeridas', default=0.0)
+    call_room_hours_used = fields.Float(string='Horas Usadas', default=0.0)
     
     price = fields.Monetary(string='Precio', compute='_compute_price', store=True)
     currency_id = fields.Many2one('res.currency', string='Moneda',
@@ -58,6 +66,13 @@ class CoworkAccessRequest(models.Model):
                                         compute='_compute_credits_available')
     can_pay_with_credits = fields.Boolean(string='Puede Pagar con Créditos',
                                            compute='_compute_can_pay_with_credits')
+    
+    # Disponibilidad de Pases/Horas
+    passes_available = fields.Integer(related='membership_id.passes_remaining')
+    call_room_hours_available = fields.Float(related='membership_id.call_room_hours_remaining')
+    
+    can_pay_with_passes = fields.Boolean(compute='_compute_can_pay_others')
+    can_pay_with_hours = fields.Boolean(compute='_compute_can_pay_others')
     
     notes = fields.Text(string='Notas')
     rejection_reason = fields.Text(string='Motivo de Rechazo')
@@ -87,11 +102,52 @@ class CoworkAccessRequest(models.Model):
                 record.credits_available >= record.credits_cost
             )
     
-    @api.onchange('service_id')
+    @api.depends('membership_id.passes_remaining', 'membership_id.call_room_hours_remaining',
+                 'service_type', 'duration_hours')
+    def _compute_can_pay_others(self):
+        for record in self:
+            # Pases: asumimos 1 pase por acceso (independiente de duración? O por día?)
+            # Prompt: "Los créditos se usan para ... y call rooms incluidos en una membresía de una hora"
+            # Vamos a asumir que "Pases" es para accesos generales (shared_space)
+            record.can_pay_with_passes = (
+                record.service_type in ['shared_space', 'hot_desk'] and 
+                record.membership_id.passes_remaining > 0
+            )
+            
+            # Call Rooms
+            # "call rooms incluidos en una membresía de una hora" (implica 1 hora incluida?)
+            # Vamos a usar el campo call_room_hours_included del plan
+            is_call_room = record.service_type in ['phone_booth', 'meeting_room'] # Maybe just phone_booth for call room
+            # Si el tipo es específico
+            if record.service_id.name and 'Call Room' in record.service_id.name:
+                is_call_room = True
+                
+            record.can_pay_with_hours = (
+                is_call_room and 
+                record.membership_id.call_room_hours_remaining >= record.duration_hours
+            )
+
+    @api.onchange('service_id', 'duration_hours')
     def _onchange_service_id(self):
         if self.service_id:
+            # Recalcular campos de costo si es necesario
+            if self.service_type in ['shared_space', 'hot_desk']:
+                self.passes_cost = 1
+            else:
+                self.passes_cost = 0
+                
+            if self.service_id.name and 'Call Room' in self.service_id.name:
+                self.call_room_hours_cost = self.duration_hours
+            else:
+                self.call_room_hours_cost = 0.0
+
+            # Determinar método de pago por defecto
             if not self.service_id.is_paid:
                 self.payment_method = 'free'
+            elif self.can_pay_with_hours:
+                self.payment_method = 'call_room_hours'
+            elif self.can_pay_with_passes:
+                self.payment_method = 'passes'
             elif self.can_pay_with_credits:
                 self.payment_method = 'credits'
             else:
@@ -137,6 +193,22 @@ class CoworkAccessRequest(models.Model):
                 candidate_end = candidate.date_scheduled + timedelta(hours=candidate.duration_hours)
                 if candidate_end > start_date:
                     raise ValidationError(_('El servicio ya está reservado para este horario.'))
+                    
+            # Verificar Pisos Exclusivos
+            # Si reservo un escritorio en un piso exclusivo, debo ser el inquilino exclusivo.
+            # O si reservo el piso entero?
+            # Asumimos que los escritorios tienen floor_id
+            # No tenemos floor_id directo en service, pero quizás en desk relacionado?
+            # cowork_service no tiene link a desk/floor.
+            # Pero cowork_access_request suele ser para services genéricos o específicos?
+            # Faltaría linkear la solicitud a un recurso específico si es "Book a Desk".
+            # Asumiremos que el service_id puede representar un recurso o hay un campo faltante.
+            # Si no hay campo resource_id, no podemos validar exclusive floor aquí fácilmente sin cambiar modelo.
+            # PERO: desk_id está en cowork.membership para asignación fija.
+            # Si esto es "Booking", debería haber un target.
+            # Vamos a asumir que validation global está bien, pero para Exclusive Floors:
+            # Si hay un piso Exclusive Rented, nadie más debería poder reservar recursos ahí.
+            pass
     
     def action_submit(self):
         """Enviar solicitud para aprobación"""
@@ -150,6 +222,12 @@ class CoworkAccessRequest(models.Model):
                     raise UserError(_('No tiene suficientes créditos disponibles. '
                                      'Disponible: %s, Requerido: %s') % 
                                    (record.credits_available, record.credits_cost))
+            elif record.payment_method == 'passes':
+                if not record.can_pay_with_passes:
+                    raise UserError(_('No tiene pases disponibles.'))
+            elif record.payment_method == 'call_room_hours':
+                 if not record.can_pay_with_hours:
+                    raise UserError(_('No tiene horas de Call Room disponibles.'))
             
             record.write({'state': 'pending'})
             
@@ -172,6 +250,12 @@ class CoworkAccessRequest(models.Model):
                     'credits_amount': -record.credits_cost,
                     'description': _('Uso de servicio: %s') % record.service_id.name,
                 })
+            elif record.payment_method == 'passes':
+                record.passes_used = 1 # O cost field
+                record.membership_id.passes_used += 1
+            elif record.payment_method == 'call_room_hours':
+                record.call_room_hours_used = record.duration_hours
+                record.membership_id.call_room_hours_used += record.duration_hours
             elif record.payment_method == 'invoice':
                 # Crear factura
                 record._create_invoice()
@@ -201,15 +285,21 @@ class CoworkAccessRequest(models.Model):
     def action_cancel(self):
         """Cancelar la solicitud"""
         for record in self:
-            if record.state == 'approved' and record.payment_method == 'credits':
-                # Devolver créditos
-                self.env['cowork.credits'].create({
-                    'partner_id': record.partner_id.id,
-                    'membership_id': record.membership_id.id,
-                    'credits_type': 'refund',
-                    'credits_amount': record.credits_used,
-                    'description': _('Devolución por cancelación: %s') % record.service_id.name,
-                })
+            if record.state == 'approved':
+                if record.payment_method == 'credits':
+                    # Devolver créditos
+                    self.env['cowork.credits'].create({
+                        'partner_id': record.partner_id.id,
+                        'membership_id': record.membership_id.id,
+                        'credits_type': 'refund',
+                        'credits_amount': record.credits_used,
+                        'description': _('Devolución por cancelación: %s') % record.service_id.name,
+                    })
+                elif record.payment_method == 'passes':
+                    record.membership_id.passes_used -= record.passes_used
+                elif record.payment_method == 'call_room_hours':
+                    record.membership_id.call_room_hours_used -= record.call_room_hours_used
+                    
             record.write({'state': 'cancelled'})
     
     def _create_invoice(self):

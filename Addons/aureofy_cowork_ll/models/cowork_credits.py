@@ -19,6 +19,7 @@ class CoworkCredits(models.Model):
         ('used', 'Usados'),
         ('refund', 'Reembolso'),
         ('bonus', 'Bonificación'),
+        ('renewal', 'Renovación Mensual'),
         ('expired', 'Expirados'),
     ], string='Tipo', required=True)
     
@@ -28,6 +29,9 @@ class CoworkCredits(models.Model):
     date = fields.Datetime(string='Fecha', default=fields.Datetime.now)
     
     description = fields.Char(string='Descripción')
+    
+    # Expiración
+    date_expiration = fields.Date(string='Fecha de Vencimiento')
     
     # Para compras de créditos
     invoice_id = fields.Many2one('account.move', string='Factura')
@@ -53,12 +57,36 @@ class CoworkCredits(models.Model):
     @api.model
     def get_partner_balance(self, partner_id):
         """Obtener balance de créditos de un partner"""
+        # Filtrar créditos expirados
+        today = fields.Date.today()
+        # Nota: La lógica de 'used' no tiene expiration, los 'granted'/'purchased' sí.
+        # Es complejo calcular balance con expiración sin FIFO.
+        # Simplificación: Sumar todo lo que no tenga fecha de expiración O fecha futura.
+        # Y restar todo lo usado.
+        
+        # Mejor enfoque: Calcular créditos positivos válidos y restar negativos.
         credits = self.search([('partner_id', '=', partner_id)])
-        return sum(credits.mapped('credits_amount'))
+        
+        valid_credits = 0
+        used_credits = 0
+        
+        for credit in credits:
+            if credit.credits_amount > 0:
+                if not credit.date_expiration or credit.date_expiration >= today:
+                    valid_credits += credit.credits_amount
+            else:
+                used_credits += abs(credit.credits_amount)
+                
+        return valid_credits - used_credits
     
     @api.model
-    def purchase_credits(self, partner_id, amount, price_per_credit):
+    def purchase_credits(self, partner_id, amount, price_per_credit, validity_years=1):
         """Comprar créditos para un miembro"""
+        
+        date_expiration = False
+        if validity_years:
+            date_expiration = fields.Date.today() + relativedelta(years=validity_years)
+            
         # Crear registro de créditos
         credit = self.create({
             'partner_id': partner_id,
@@ -66,6 +94,7 @@ class CoworkCredits(models.Model):
             'credits_amount': amount,
             'price_per_credit': price_per_credit,
             'description': _('Compra de %s créditos') % amount,
+            'date_expiration': date_expiration,
         })
         
         # Crear factura
@@ -101,6 +130,9 @@ class CoworkCreditPackage(models.Model):
     price_per_credit = fields.Monetary(string='Precio por Crédito', 
                                         compute='_compute_price_per_credit',
                                         currency_field='currency_id')
+    
+    validity_years = fields.Integer(string='Validez (Años)', default=1,
+                                     help='Años de vigencia de los créditos comprados.')
     
     discount_percentage = fields.Float(string='Descuento (%)',
                                         help='Descuento aplicado respecto al precio por crédito base')

@@ -58,6 +58,17 @@ class CoworkMembershipPlan(models.Model):
     deposit_amount = fields.Monetary(string='Monto del Depósito', currency_field='currency_id')
     
     active = fields.Boolean(string='Activo', default=True)
+    
+    # Configuración de renovación y recurrencia
+    is_recurring = fields.Boolean(string='Es Recurrente', default=False,
+                                   help='Si es verdadero, la membresía se renueva automáticamente y otorga créditos/pases mensualmente.')
+    
+    passes_included = fields.Integer(string='Pases Incluidos (Mes)', default=0,
+                                      help='Cantidad de pases de acceso diario incluidos por mes.')
+    
+    call_room_hours_included = fields.Integer(string='Horas de Call Room Incluidas (Mes)', default=0,
+                                               help='Horas de uso de cabinas telefónicas incluidas por mes.')
+
     company_id = fields.Many2one('res.company', string='Compañía',
                                   default=lambda self: self.env.company)
     

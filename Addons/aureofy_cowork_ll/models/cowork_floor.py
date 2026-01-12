@@ -21,6 +21,22 @@ class CoworkFloor(models.Model):
     desk_count = fields.Integer(string='Nº Escritorios', compute='_compute_counts')
     bed_count = fields.Integer(string='Nº Camas', compute='_compute_counts')
     
+    # Renta exclusiva
+    is_exclusive = fields.Boolean(string='Es Exclusivo', default=False,
+                                   help='Si es verdadero, el piso se alquila completo a un solo miembro.')
+    
+    state = fields.Selection([
+        ('available', 'Disponible'),
+        ('rented', 'Alquilado'),
+        ('maintenance', 'Mantenimiento'),
+    ], string='Estado', default='available')
+    
+    member_id = fields.Many2one('res.partner', string='Inquilino (Exclusivo)',
+                                 domain=[('is_cowork_member', '=', True)])
+    
+    date_start = fields.Date(string='Fecha Inicio Renta')
+    date_end = fields.Date(string='Fecha Fin Renta')
+    
     active = fields.Boolean(string='Activo', default=True)
     company_id = fields.Many2one('res.company', string='Compañía', 
                                   default=lambda self: self.env.company)

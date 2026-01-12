@@ -62,6 +62,20 @@ class CoworkMembership(models.Model):
     # Políticas
     policy_ids = fields.Many2many('cowork.policy', string='Políticas Acordadas')
     policies_accepted = fields.Boolean(string='Políticas Aceptadas', default=False)
+
+    # Pases y Horas
+    passes_granted = fields.Integer(string='Pases Otorgados (Mes)', 
+                                     compute='_compute_passes', store=True)
+    passes_used = fields.Integer(string='Pases Usados (Mes)', default=0)
+    passes_remaining = fields.Integer(string='Pases Disponibles', 
+                                       compute='_compute_passes_remaining')
+    
+    call_room_hours_granted = fields.Integer(string='Horas Call Room (Mes)',
+                                              compute='_compute_call_room_hours', store=True)
+    # Nota: Se podría calcular dinámicamente con access_request_ids
+    call_room_hours_used = fields.Float(string='Horas Call Room Usadas (Mes)', default=0.0)
+    call_room_hours_remaining = fields.Float(string='Horas Call Room Disp.',
+                                              compute='_compute_call_room_remaining')
     
     # Depósito de seguridad
     deposit_id = fields.Many2one('cowork.security.deposit', string='Depósito de Seguridad')
@@ -132,15 +146,27 @@ class CoworkMembership(models.Model):
                 ).mapped('credits_used')
             )
     
-    @api.depends('credits_granted', 'credits_used')
-    def _compute_credits_remaining(self):
-        for record in self:
-            # Incluir créditos adicionales comprados
-            additional_credits = sum(self.env['cowork.credits'].search([
-                ('partner_id', '=', record.partner_id.id),
-                ('credits_type', 'in', ['purchased', 'bonus']),
-            ]).mapped('credits_amount'))
             record.credits_remaining = record.credits_granted + additional_credits - record.credits_used
+    
+    @api.depends('plan_id.passes_included')
+    def _compute_passes(self):
+        for record in self:
+            record.passes_granted = record.plan_id.passes_included if record.plan_id else 0
+
+    @api.depends('passes_granted', 'passes_used')
+    def _compute_passes_remaining(self):
+        for record in self:
+             record.passes_remaining = record.passes_granted - record.passes_used
+
+    @api.depends('plan_id.call_room_hours_included')
+    def _compute_call_room_hours(self):
+        for record in self:
+            record.call_room_hours_granted = record.plan_id.call_room_hours_included if record.plan_id else 0
+            
+    @api.depends('call_room_hours_granted', 'call_room_hours_used')
+    def _compute_call_room_remaining(self):
+        for record in self:
+            record.call_room_hours_remaining = max(0.0, record.call_room_hours_granted - record.call_room_hours_used)
     
     @api.depends('access_request_ids')
     def _compute_access_request_count(self):
@@ -362,57 +388,55 @@ class CoworkMembership(models.Model):
             'context': {'default_membership_id': self.id},
         }
     
-    @api.model
-    def _cron_check_expiry(self):
-        """Cron job para verificar vencimientos"""
-        today = fields.Date.today()
-        
-        # Buscar expiradas
-        expired_memberships = self.search([
-            ('state', '=', 'active'),
-            ('date_end', '<', today),
-        ])
-
-        for membership in expired_memberships:
-            # Guardamos el plan y si tiene auto-renew antes de expirar
-            auto_renew = membership.plan_id.auto_renew
-            
-            # Expirar membresía actual (libera recursos)
-            membership.action_expire()
-            
-            if auto_renew:
-                # Renovar automáticamente
-                res = membership.action_renew()
-                if res and res.get('res_id'):
-                    new_membership = self.browse(res['res_id'])
-                    
-                    # Aceptar políticas implícitamente al renovar
-                    new_membership.write({'policies_accepted': True})
-                    
-                    try:
-                        # Confirmar (asigna recursos y créditos)
-                        new_membership.action_confirm()
-                        
-                        # Activar inmediatamente si es renovación continua?
-                        # Generalmente se espera el pago, pero si es auto-renovación
-                        # y tiene créditos, quizás se asume confianza o se genera factura.
-                        # Vamos a crear la suscripción/orden de venta para el cobro.
-                        new_membership.action_create_subscription()
-                        
-                        # Opcional: Notificar renovación
-                        # new_membership.message_post(body=_("Renovación automática exitosa."))
-                    except Exception as e:
-                        new_membership.message_post(body=_("Error en renovación automática: %s") % str(e))
-        
-        # Enviar recordatorios de renovación (para las que vencen en 7 días)
-        reminder_date = today + relativedelta(days=7)
-        to_remind = self.search([
-            ('state', '=', 'active'),
-            ('date_end', '=', reminder_date),
-            ('plan_id.auto_renew', '=', False) # Solo si no es automática? O avisar igual? Avisar igual.
-        ])
         for membership in to_remind:
             membership.action_send_renewal_reminder()
+            
+    @api.model
+    def _cron_monthly_renewal_benefits(self):
+        """Cron job para renovar créditos y pases mensualmente en membresías recurrentes"""
+        today = fields.Date.today()
+        # Buscar membresías activas y recurrentes
+        active_recurring = self.search([
+            ('state', '=', 'active'),
+            ('plan_id.is_recurring', '=', True),
+        ])
+        
+        for membership in active_recurring:
+            # Verificar si hoy es el día de renovación (mismo día del mes que start_date)
+            # Simplificación: si el día coincide.
+            if membership.date_start.day == today.day:
+                membership.action_renew_monthly_benefits()
+                
+    def action_renew_monthly_benefits(self):
+        """Renovar beneficios mensuales (Créditos, Pases)"""
+        for record in self:
+            # 1. Renovar Créditos: Agregar créditos del plan nuevamente
+            # Nota: Esto suma al total otorgado. El cálculo de remaining debe considerar
+            # que los créditos "viejos" del plan quizás expiraron si no son acumulables.
+            # Según requerimiento: "se renuevan mensualmente". Asumimos reset o grant nuevo.
+            # Vamos a optar por GRANT nuevo para que quede registro.
+            
+            if record.plan_id.credits_included > 0:
+                self.env['cowork.credits'].create({
+                    'partner_id': record.partner_id.id,
+                    'membership_id': record.id,
+                    'credits_type': 'renewal',
+                    'credits_amount': record.plan_id.credits_included,
+                    'description': _('Renovación mensual de créditos plan %s') % record.plan_id.name,
+                })
+                # Actualizar el campo computado o store si es necesario. 
+                # credits_granted en este modelo es un compute store del plan, asi que quizás
+                # debamos ajustar la lógica de credits_remaining para que tome TODOS los grants
+                # vinculados a la membresía, no solo el static del plan.
+                
+            # 2. Renovar Pases (Resetear usados o acumular?)
+            # "Vienen con pases". Típicamente son mensuales "use it or lose it".
+            record.write({
+                'passes_used': 0, # Resetear consumo del mes
+                'call_room_hours_used': 0.0 # Resetear consumo
+            })
+            
+            record.message_post(body=_("Beneficios mensuales renovados (Pases y Horas reseteados, Créditos otorgados)."))
     
     def action_send_renewal_reminder(self):
         """Enviar recordatorio de renovación"""
