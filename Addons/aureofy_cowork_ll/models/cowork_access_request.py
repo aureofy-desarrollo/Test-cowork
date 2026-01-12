@@ -135,7 +135,7 @@ class CoworkAccessRequest(models.Model):
                 record.membership_id.call_room_hours_remaining >= record.duration_hours
             )
 
-    @api.onchange('service_id', 'duration_hours')
+    @api.onchange('service_id', 'duration_hours', 'is_guest')
     def _onchange_service_id(self):
         if self.service_id:
             # Recalcular campos de costo si es necesario
@@ -150,11 +150,14 @@ class CoworkAccessRequest(models.Model):
                 self.call_room_hours_cost = 0.0
 
             # Determinar método de pago por defecto
+            is_valid_pass_service = self.service_type in ['shared_space', 'hot_desk']
+            can_use_pass = (is_valid_pass_service or self.is_guest) and self.membership_id.passes_remaining > 0
+            
             if not self.service_id.is_paid:
                 self.payment_method = 'free'
             elif self.can_pay_with_hours:
                 self.payment_method = 'call_room_hours'
-            elif self.can_pay_with_passes:
+            elif can_use_pass:
                 self.payment_method = 'passes'
             elif self.can_pay_with_credits:
                 self.payment_method = 'credits'

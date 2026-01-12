@@ -115,9 +115,11 @@
                     <group>
                         <group string="Pago">
                             <field name="payment_method"/>
-                            <field name="credits_cost"/>
-                            <field name="credits_available"/>
+                            <field name="credits_cost" invisible="payment_method != 'credits'"/>
+                            <field name="credits_available" invisible="payment_method != 'credits'"/>
+                            <field name="passes_available" invisible="payment_method != 'passes'"/>
                             <field name="can_pay_with_credits" invisible="1"/>
+                            <field name="can_pay_with_passes" invisible="1"/>
                             <field name="credits_used" invisible="state != 'approved' or payment_method != 'credits'"/>
                             <field name="price" invisible="payment_method != 'invoice'"/>
                             <field name="invoice_id" invisible="not invoice_id"/>
