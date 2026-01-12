@@ -13,6 +13,7 @@
                 <field name="city"/>
                 <field name="desk_count"/>
                 <field name="bed_count"/>
+                <field name="state" widget="badge" decoration-info="state == 'rented'" decoration-success="state == 'available'"/>
                 <field name="active" column_invisible="1"/>
             </tree>
         </field>
