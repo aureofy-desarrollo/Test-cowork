@@ -65,6 +65,7 @@
         # Wizards
         'wizard/mass_mail_wizard_views.xml',
         'wizard/member_card_wizard_views.xml',
+        'wizard/cowork_sell_credit_package_views.xml',
         
         # Reports
         'report/membership_report.xml',

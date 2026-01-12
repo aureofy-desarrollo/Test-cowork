@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from dateutil.relativedelta import relativedelta
 
 
 class CoworkCredits(models.Model):
@@ -122,9 +123,10 @@ class CoworkCredits(models.Model):
 class CoworkCreditPackage(models.Model):
     _name = 'cowork.credit.package'
     _description = 'Paquete de Créditos'
-    _order = 'credits_amount'
+    _order = 'sequence, credits_amount'
 
     name = fields.Char(string='Nombre', required=True)
+    sequence = fields.Integer(string='Secuencia', default=10)
     credits_amount = fields.Integer(string='Cantidad de Créditos', required=True)
     price = fields.Monetary(string='Precio', required=True, currency_field='currency_id')
     price_per_credit = fields.Monetary(string='Precio por Crédito', 
