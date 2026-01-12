@@ -155,6 +155,7 @@
                                    domain="[('state', '=', 'available')]"/>
                             <field name="bed_id" invisible="space_type != 'coliving'"
                                    domain="[('state', '=', 'available')]"/>
+                            <field name="floor_id" domain="[('is_exclusive', '=', True), ('state', '=', 'available')]"/>
                         </group>
                     </group>
                     <group>

@@ -46,10 +46,14 @@
                             <field name="duration_type"/>
                             <field name="duration_value"/>
                             <field name="sequence"/>
+                            <field name="is_recurring"/>
+                            <field name="allows_exclusive_floor"/>
                         </group>
                         <group string="Precio y Créditos">
                             <field name="price"/>
                             <field name="credits_included"/>
+                            <field name="passes_included"/>
+                            <field name="call_room_hours_included"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="product_id"/>
                         </group>

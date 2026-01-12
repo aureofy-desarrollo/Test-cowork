@@ -40,6 +40,11 @@
                             <field name="name"/>
                             <field name="code"/>
                             <field name="sequence"/>
+                            <field name="is_exclusive"/>
+                            <field name="state" invisible="not is_exclusive"/>
+                            <field name="member_id" invisible="not is_exclusive or state != 'rented'"/>
+                            <field name="date_start" invisible="not is_exclusive or state != 'rented'"/>
+                            <field name="date_end" invisible="not is_exclusive or state != 'rented'"/>
                         </group>
                         <group>
                             <field name="building_name"/>
