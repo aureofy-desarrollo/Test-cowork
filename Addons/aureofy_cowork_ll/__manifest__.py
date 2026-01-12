@@ -61,6 +61,7 @@
         'views/cowork_security_deposit_views.xml',
         'views/cowork_rating_views.xml',
         'views/cowork_credits_views.xml',
+        'views/cowork_passes_views.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',
         

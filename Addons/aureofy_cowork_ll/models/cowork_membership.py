@@ -178,10 +178,10 @@ class CoworkMembership(models.Model):
         for record in self:
             record.passes_granted = record.plan_id.passes_included if record.plan_id else 0
 
-    @api.depends('passes_granted', 'passes_used')
+    @api.depends('partner_id', 'passes_granted', 'passes_used')
     def _compute_passes_remaining(self):
         for record in self:
-             record.passes_remaining = record.passes_granted - record.passes_used
+             record.passes_remaining = self.env['cowork.passes'].get_partner_balance(record.partner_id.id)
 
     @api.depends('plan_id.call_room_hours_included')
     def _compute_call_room_hours(self):
@@ -257,6 +257,16 @@ class CoworkMembership(models.Model):
                     'credits_type': 'granted',
                     'credits_amount': record.credits_granted,
                     'description': _('Créditos del plan %s') % record.plan_id.name,
+                })
+            
+            # Registrar pases otorgados
+            if record.passes_granted > 0:
+                self.env['cowork.passes'].create({
+                    'partner_id': record.partner_id.id,
+                    'membership_id': record.id,
+                    'pass_type': 'granted',
+                    'amount': record.passes_granted,
+                    'description': _('Pases del plan %s') % record.plan_id.name,
                 })
     
     def action_create_invoice(self):
@@ -390,8 +400,9 @@ class CoworkMembership(models.Model):
                     'date_end': False,
                 })
             
-            # Expirar créditos restantes de esta membresía
+            # Expirar créditos y pases restantes de esta membresía
             record._expire_remaining_credits()
+            record._expire_remaining_passes()
             
             record.write({'state': 'expired'})
     
@@ -412,8 +423,9 @@ class CoworkMembership(models.Model):
                     'date_end': False,
                 })
             
-            # Expirar créditos restantes de esta membresía
+            # Expirar créditos y pases restantes de esta membresía
             record._expire_remaining_credits()
+            record._expire_remaining_passes()
             
             record.write({'state': 'cancelled'})
     
@@ -517,10 +529,19 @@ class CoworkMembership(models.Model):
                 # debamos ajustar la lógica de credits_remaining para que tome TODOS los grants
                 # vinculados a la membresía, no solo el static del plan.
                 
-            # 2. Renovar Pases (Resetear usados o acumular?)
-            # "Vienen con pases". Típicamente son mensuales "use it or lose it".
+            # 2. Renovar Pases: Expirar viejos y otorgar nuevos
+            record._expire_remaining_passes()
+            if record.plan_id.passes_included > 0:
+                self.env['cowork.passes'].create({
+                    'partner_id': record.partner_id.id,
+                    'membership_id': record.id,
+                    'pass_type': 'renewal',
+                    'amount': record.plan_id.passes_included,
+                    'description': _('Renovación mensual de pases plan %s') % record.plan_id.name,
+                })
+            
             record.write({
-                'passes_used': 0, # Resetear consumo del mes
+                'passes_used': 0, # Resetear consumo del mes (legacy field)
                 'call_room_hours_used': 0.0 # Resetear consumo
             })
             
@@ -550,6 +571,37 @@ class CoworkMembership(models.Model):
                 'credits_amount': -balance,
                 'description': _('Vencimiento de créditos no acumulables (Membresía %s)') % self.name,
             })
+
+    def _expire_remaining_passes(self):
+        """Expirar pases restantes vinculados a la membresía"""
+        self.ensure_one()
+        membership_passes = self.env['cowork.passes'].search([
+            ('membership_id', '=', self.id)
+        ])
+        balance = sum(membership_passes.mapped('amount'))
+        if balance > 0:
+            self.env['cowork.passes'].create({
+                'partner_id': self.partner_id.id,
+                'membership_id': self.id,
+                'pass_type': 'expired',
+                'amount': -balance,
+                'description': _('Vencimiento de pases no acumulables (Membresía %s)') % self.name,
+            })
+
+    def action_view_pass_history(self):
+        """Ver historial de pases"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Historial de Pases'),
+            'res_model': 'cowork.passes',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.partner_id.id)],
+            'context': {
+                'default_partner_id': self.partner_id.id,
+                'default_membership_id': self.id,
+            },
+        }
 
     def _get_report_base_filename(self):
         self.ensure_one()

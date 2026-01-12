@@ -141,6 +141,10 @@
                                 <span class="o_stat_text">Piso Alquilado</span>
                             </div>
                         </button>
+                        <button name="action_view_pass_history" type="object" 
+                                class="oe_stat_button" icon="fa-ticket">
+                            <field name="passes_remaining" widget="statinfo" string="Pases Disp."/>
+                        </button>
                     </div>
                     <field name="partner_image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">

@@ -226,6 +226,7 @@ class CoworkAccessRequest(models.Model):
     @api.constrains('is_guest', 'payment_method')
     def _check_guest_payment(self):
         for record in self:
+            # Check only if is_guest is True
             if record.is_guest and record.payment_method != 'passes':
                 raise ValidationError(_('Las solicitudes para invitados solo pueden ser pagadas con Pases de Acceso.'))
 
@@ -270,8 +271,14 @@ class CoworkAccessRequest(models.Model):
                     'description': _('Uso de servicio: %s') % record.service_id.name,
                 })
             elif record.payment_method == 'passes':
-                record.passes_used = 1 # O cost field
-                record.membership_id.passes_used += 1
+                record.passes_used = 1
+                self.env['cowork.passes'].create({
+                    'partner_id': record.partner_id.id,
+                    'membership_id': record.membership_id.id,
+                    'pass_type': 'used',
+                    'amount': -1,
+                    'description': _('Uso de Pase: %s') % record.service_id.name,
+                })
                 
                 # Si es invitado, registrar en la descripción
                 description = _('Uso de Pase: %s') % record.service_id.name
@@ -323,9 +330,13 @@ class CoworkAccessRequest(models.Model):
                         'description': _('Devolución por cancelación: %s') % record.service_id.name,
                     })
                 elif record.payment_method == 'passes':
-                    record.membership_id.passes_used -= record.passes_used
-                elif record.payment_method == 'call_room_hours':
-                    record.membership_id.call_room_hours_used -= record.call_room_hours_used
+                    self.env['cowork.passes'].create({
+                        'partner_id': record.partner_id.id,
+                        'membership_id': record.membership_id.id,
+                        'pass_type': 'refund',
+                        'amount': 1,
+                        'description': _('Reembolso de Pase: %s') % record.service_id.name,
+                    })
                     
             record.write({'state': 'cancelled'})
     

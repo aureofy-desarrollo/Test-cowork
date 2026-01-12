@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista -->
+    <record id="view_cowork_passes_tree" model="ir.ui.view">
+        <field name="name">cowork.passes.tree</field>
+        <field name="model">cowork.passes</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="pass_type in ('granted', 'renewal', 'bonus', 'refund')"
+                  decoration-danger="pass_type == 'expired'"
+                  decoration-muted="pass_type == 'used'">
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="membership_id"/>
+                <field name="pass_type"/>
+                <field name="amount" sum="Total"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Búsqueda -->
+    <record id="view_cowork_passes_search" model="ir.ui.view">
+        <field name="name">cowork.passes.search</field>
+        <field name="model">cowork.passes</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="membership_id"/>
+                <field name="pass_type"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_partner" string="Miembro" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_type" string="Tipo" context="{'group_by': 'pass_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_cowork_passes" model="ir.actions.act_window">
+        <field name="name">Historial de Pases</field>
+        <field name="res_model">cowork.passes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_cowork_passes_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay registros de pases aún
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_cowork_passes"
+              name="Historial de Pases"
+              parent="menu_cowork_access"
+              action="action_cowork_passes"
+              sequence="20"/>
+</odoo>
