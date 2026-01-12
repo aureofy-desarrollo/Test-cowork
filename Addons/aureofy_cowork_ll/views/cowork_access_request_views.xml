@@ -105,6 +105,9 @@
                         </group>
                         <group string="Programación">
                             <field name="date_request"/>
+                            <field name="is_guest"/>
+                            <field name="guest_name" invisible="not is_guest" required="is_guest"/>
+                            <field name="guest_email" invisible="not is_guest"/>
                             <field name="date_scheduled"/>
                             <field name="duration_hours"/>
                         </group>

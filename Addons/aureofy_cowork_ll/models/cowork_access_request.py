@@ -74,6 +74,10 @@ class CoworkAccessRequest(models.Model):
     can_pay_with_passes = fields.Boolean(compute='_compute_can_pay_others')
     can_pay_with_hours = fields.Boolean(compute='_compute_can_pay_others')
     
+    is_guest = fields.Boolean(string='Es Invitado', default=False)
+    guest_name = fields.Char(string='Nombre del Invitado')
+    guest_email = fields.Char(string='Email del Invitado')
+    
     notes = fields.Text(string='Notas')
     rejection_reason = fields.Text(string='Motivo de Rechazo')
     
@@ -109,8 +113,12 @@ class CoworkAccessRequest(models.Model):
             # Pases: asumimos 1 pase por acceso (independiente de duración? O por día?)
             # Prompt: "Los créditos se usan para ... y call rooms incluidos en una membresía de una hora"
             # Vamos a asumir que "Pases" es para accesos generales (shared_space)
+            # Pases: asumimos 1 pase por acceso
+            # Si es invitado, siempre se puede pagar con pase si tiene disponibles
+            is_valid_service = record.service_type in ['shared_space', 'hot_desk']
+            
             record.can_pay_with_passes = (
-                record.service_type in ['shared_space', 'hot_desk'] and 
+                (is_valid_service or record.is_guest) and 
                 record.membership_id.passes_remaining > 0
             )
             
@@ -253,6 +261,14 @@ class CoworkAccessRequest(models.Model):
             elif record.payment_method == 'passes':
                 record.passes_used = 1 # O cost field
                 record.membership_id.passes_used += 1
+                
+                # Si es invitado, registrar en la descripción
+                description = _('Uso de Pase: %s') % record.service_id.name
+                if record.is_guest:
+                    description = _('Pase de Invitado: %s') % (record.guest_name or _('N/A'))
+                    
+                # Opcional: Crear un registro de log o similar
+                record.membership_id.message_post(body=description)
             elif record.payment_method == 'call_room_hours':
                 record.call_room_hours_used = record.duration_hours
                 record.membership_id.call_room_hours_used += record.duration_hours
