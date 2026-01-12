@@ -13,5 +13,6 @@ from . import cowork_access_request
 from . import cowork_security_deposit
 from . import cowork_rating
 from . import cowork_credits
+from . import cowork_passes
 from . import res_partner
 from . import crm_lead
