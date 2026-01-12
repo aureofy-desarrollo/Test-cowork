@@ -46,6 +46,7 @@
         
         # Views
         'views/dashboard_views.xml',
+        'views/cowork_report_views.xml',
         'views/menu_views.xml',
         'wizard/cowork_sell_credit_package_views.xml',
         'views/cowork_floor_views.xml',
@@ -60,7 +61,6 @@
         'views/cowork_security_deposit_views.xml',
         'views/cowork_rating_views.xml',
         'views/cowork_credits_views.xml',
-        'views/cowork_report_views.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',
         
