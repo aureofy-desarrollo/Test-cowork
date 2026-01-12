@@ -47,6 +47,7 @@
         # Views
         'views/dashboard_views.xml',
         'views/menu_views.xml',
+        'wizard/cowork_sell_credit_package_views.xml',
         'views/cowork_floor_views.xml',
         'views/cowork_desk_views.xml',
         'views/cowork_bed_views.xml',
@@ -65,7 +66,6 @@
         # Wizards
         'wizard/mass_mail_wizard_views.xml',
         'wizard/member_card_wizard_views.xml',
-        'wizard/cowork_sell_credit_package_views.xml',
         
         # Reports
         'report/membership_report.xml',
