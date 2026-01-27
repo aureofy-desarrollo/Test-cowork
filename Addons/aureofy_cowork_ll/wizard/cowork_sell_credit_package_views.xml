@@ -7,7 +7,7 @@
             <form string="Vender Paquete de Créditos">
                 <sheet>
                     <group>
-                        <field name="package_id" readonly="1"/>
+                        <field name="package_id"/>
                         <field name="partner_id"/>
                         <field name="amount"/>
                         <field name="price"/>
