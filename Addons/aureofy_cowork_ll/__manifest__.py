@@ -43,8 +43,6 @@
         'data/sequence_data.xml',
         'data/product_data.xml',
         'data/mail_template_data.xml',
-        'data/exclusive_floor_test_data.xml',
-        'data/membership_test_data.xml',
         
         # Views
         'views/dashboard_views.xml',
@@ -82,6 +80,8 @@
     ],
     'demo': [
         'data/demo_data.xml',
+        'data/exclusive_floor_test_data.xml',
+        'data/membership_test_data.xml',
     ],
     'assets': {
         'web.assets_backend': [
