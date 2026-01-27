@@ -181,6 +181,14 @@
                             <field name="credits_used"/>
                             <field name="credits_remaining"/>
                         </group>
+                        <group string="Pases y Horas">
+                            <field name="passes_granted"/>
+                            <field name="passes_used"/>
+                            <field name="passes_remaining"/>
+                            <field name="call_room_hours_granted"/>
+                            <field name="call_room_hours_used"/>
+                            <field name="call_room_hours_remaining"/>
+                        </group>
                     </group>
                     <group>
                         <group string="Facturación">
