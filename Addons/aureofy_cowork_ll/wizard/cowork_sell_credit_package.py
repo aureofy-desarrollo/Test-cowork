@@ -16,11 +16,26 @@ class CoworkSellCreditPackage(models.TransientModel):
 
     def action_confirm(self):
         self.ensure_one()
-        # Llamar al método de compra de créditos
-        self.env['cowork.credits'].purchase_credits(
-            partner_id=self.partner_id.id,
-            amount=self.package_id.credits_amount,
-            price_per_credit=self.package_id.price_per_credit,
-            validity_years=self.package_id.validity_years
-        )
-        return {'type': 'ir.actions.act_window_close'}
+        
+        if not self.package_id.product_id:
+            self.package_id._create_or_update_product()
+
+        # Crear Orden de Venta
+        sale_order = self.env['sale.order'].create({
+            'partner_id': self.partner_id.id,
+            'order_line': [(0, 0, {
+                'product_id': self.package_id.product_id.id,
+                'name': _('Paquete de Créditos: %s') % self.package_id.name,
+                'product_uom_qty': 1,
+                'price_unit': self.package_id.price,
+            })],
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Orden de Venta'),
+            'res_model': 'sale.order',
+            'res_id': sale_order.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }

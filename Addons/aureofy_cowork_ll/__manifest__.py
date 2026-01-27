@@ -65,6 +65,7 @@
         'views/cowork_passes_views.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',
+        'views/sale_order_views.xml',
         
         # Wizards
         'wizard/mass_mail_wizard_views.xml',
