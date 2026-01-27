@@ -43,6 +43,7 @@
         'data/sequence_data.xml',
         'data/product_data.xml',
         'data/mail_template_data.xml',
+        'data/exclusive_floor_test_data.xml',
         
         # Views
         'views/dashboard_views.xml',

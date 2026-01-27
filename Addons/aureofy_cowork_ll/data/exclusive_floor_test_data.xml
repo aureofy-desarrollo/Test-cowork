@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Plan de Membresía: Coworking Mensual (Soporta Piso Exclusivo) -->
+    <record id="plan_coworking_mensual_exclusive" model="cowork.membership.plan">
+        <field name="name">Coworking Mensual</field>
+        <field name="space_type">coworking</field>
+        <field name="duration_type">monthly</field>
+        <field name="duration_value">1</field>
+        <field name="price">350.00</field>
+        <field name="allows_exclusive_floor">True</field>
+        <field name="is_recurring">True</field>
+        <field name="credits_included">25</field>
+        <field name="passes_included">5</field>
+        <field name="call_room_hours_included">10</field>
+    </record>
+
+    <!-- Piso Exclusivo: Piso 2 (Niceto) -->
+    <record id="floor_niceto_piso_2" model="cowork.floor">
+        <field name="name">Piso 2 (Niceto)</field>
+        <field name="code">NIC-P2</field>
+        <field name="building_name">Niceto</field>
+        <field name="city">Buenos Aires</field>
+        <field name="sequence">3</field>
+        <field name="is_exclusive">True</field>
+        <field name="price_per_month">1500.00</field>
+        <field name="state">available</field>
+    </record>
+</odoo>
