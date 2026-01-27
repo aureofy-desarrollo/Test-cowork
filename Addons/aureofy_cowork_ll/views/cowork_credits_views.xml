@@ -7,8 +7,9 @@
         <field name="arch" type="xml">
             <tree decoration-success="credits_amount > 0" decoration-danger="credits_amount &lt; 0">
                 <header>
-                    <button name="%(aureofy_cowork_ll.action_cowork_sell_credit_package)d" 
-                            string="Vender Paquete" type="action" class="btn-primary"/>
+                    <button name="aureofy_cowork_ll.action_cowork_sell_credit_package" 
+                            string="Vender Paquete" type="action" class="btn-primary"
+                            display="always"/>
                 </header>
                 <field name="date"/>
                 <field name="partner_id"/>
@@ -27,6 +28,10 @@
         <field name="model">cowork.credits</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="aureofy_cowork_ll.action_cowork_sell_credit_package" 
+                            string="Vender Paquete" type="action" class="btn-primary"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
