@@ -42,6 +42,7 @@
         # Data
         'data/sequence_data.xml',
         'data/product_data.xml',
+        'data/service_data.xml',
         'data/mail_template_data.xml',
         
         # Views

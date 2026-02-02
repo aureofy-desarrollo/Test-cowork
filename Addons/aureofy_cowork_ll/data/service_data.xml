@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="service_guest" model="cowork.service">
+        <field name="name">Invitado</field>
+        <field name="service_type">other</field>
+        <field name="is_paid">True</field>
+        <field name="price">0.0</field>
+        <field name="credits_cost">0</field>
+        <field name="allow_credit_payment">False</field>
+        <field name="requires_approval">False</field>
+        <field name="description">Servicio base para registro de invitados con pases de acceso.</field>
+    </record>
+</odoo>

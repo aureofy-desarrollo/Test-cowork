@@ -30,7 +30,8 @@
         <field name="name">MEM-TEST-001</field>
         <field name="partner_id" ref="partner_test_cowork"/>
         <field name="plan_id" ref="plan_coworking_mensual_exclusive"/>
-        <field name="desk_id" ref="desk_test_01"/>
+        <field name="floor_id" ref="floor_niceto_piso_2"/>
+        <field name="desk_id" eval="False"/>
         <field name="date_start" eval="datetime.now().strftime('%Y-%m-%d')"/>
         <field name="state">draft</field>
     </record>
