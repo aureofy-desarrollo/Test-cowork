@@ -93,6 +93,9 @@ class CoworkMembership(models.Model):
     # Facturación
     invoice_ids = fields.Many2many('account.move', string='Facturas', copy=False)
     invoice_count = fields.Integer(compute='_compute_invoice_count')
+    
+    sale_order_ids = fields.One2many('sale.order', 'membership_id', string='Órdenes de Venta')
+    sale_order_count = fields.Integer(compute='_compute_sale_order_count')
     amount_total = fields.Monetary(string='Monto Total', compute='_compute_amounts',
                                     currency_field='currency_id')
     amount_paid = fields.Monetary(string='Monto Pagado', compute='_compute_amounts',
@@ -202,6 +205,11 @@ class CoworkMembership(models.Model):
     def _compute_invoice_count(self):
         for record in self:
             record.invoice_count = len(record.invoice_ids)
+            
+    @api.depends('sale_order_ids')
+    def _compute_sale_order_count(self):
+        for record in self:
+            record.sale_order_count = len(record.sale_order_ids)
     
     @api.depends('invoice_ids.amount_total', 'invoice_ids.amount_residual', 'invoice_ids.state')
     def _compute_amounts(self):
@@ -352,6 +360,7 @@ class CoworkMembership(models.Model):
             
         sale_order_vals = {
             'partner_id': self.partner_id.id,
+            'membership_id': self.id,
             'date_order': fields.Datetime.now(),
             'order_line': order_line,
         }
@@ -482,6 +491,18 @@ class CoworkMembership(models.Model):
             'res_model': 'account.move',
             'view_mode': 'tree,form',
             'domain': [('id', 'in', self.invoice_ids.ids)],
+        }
+
+    def action_view_sale_orders(self):
+        """Ver órdenes de venta relacionadas"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Órdenes de Venta'),
+            'res_model': 'sale.order',
+            'view_mode': 'tree,form',
+            'domain': [('membership_id', '=', self.id)],
+            'context': {'default_membership_id': self.id, 'default_partner_id': self.partner_id.id},
         }
     
     def action_view_access_requests(self):

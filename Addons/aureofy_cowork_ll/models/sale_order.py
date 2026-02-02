@@ -6,6 +6,8 @@ from dateutil.relativedelta import relativedelta
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    membership_id = fields.Many2one('cowork.membership', string='Membresía', ondelete='set null')
+
     def _action_confirm(self):
         """Otorgar créditos automáticamente al confirmar la orden"""
         res = super(SaleOrder, self)._action_confirm()
