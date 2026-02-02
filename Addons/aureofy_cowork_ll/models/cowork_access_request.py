@@ -135,6 +135,11 @@ class CoworkAccessRequest(models.Model):
                 record.membership_id.call_room_hours_remaining >= record.duration_hours
             )
 
+    @api.onchange('is_guest')
+    def _onchange_is_guest(self):
+        if self.is_guest:
+            self.payment_method = 'passes'
+
     @api.onchange('service_id', 'duration_hours', 'is_guest')
     def _onchange_service_id(self):
         if self.service_id:
