@@ -27,6 +27,7 @@ class CoworkSellCreditPackage(models.TransientModel):
                 'product_id': self.package_id.product_id.id,
                 'name': _('Paquete de Créditos: %s') % self.package_id.name,
                 'product_uom_qty': 1,
+                'product_uom': self.package_id.product_id.uom_id.id,
                 'price_unit': self.package_id.price,
             })],
         })

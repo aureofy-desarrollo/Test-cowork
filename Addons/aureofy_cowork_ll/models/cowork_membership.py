@@ -283,6 +283,7 @@ class CoworkMembership(models.Model):
             'product_id': self.plan_id.product_id.id,
             'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
             'quantity': 1,
+            'product_uom_id': self.plan_id.product_id.uom_id.id,
             'price_unit': self.plan_id.price,
         })]
         
@@ -293,8 +294,10 @@ class CoworkMembership(models.Model):
                 price_floor *= 12
                 
             invoice_line_ids.append((0, 0, {
+                'product_id': self.plan_id.product_id.id,  # Usar el mismo producto del plan como base
                 'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
                 'quantity': 1,
+                'product_uom_id': self.plan_id.product_id.uom_id.id,
                 'price_unit': price_floor,
             }))
             
@@ -329,6 +332,7 @@ class CoworkMembership(models.Model):
             'product_id': self.plan_id.product_id.id,
             'name': _('Membresía %s - %s') % (self.name, self.plan_id.name),
             'product_uom_qty': 1,
+            'product_uom': self.plan_id.product_id.uom_id.id,
             'price_unit': self.plan_id.price,
         })]
         
@@ -339,8 +343,10 @@ class CoworkMembership(models.Model):
                 price_floor *= 12
                 
             order_line.append((0, 0, {
+                'product_id': self.plan_id.product_id.id,  # Usar el mismo producto del plan como base
                 'name': _('Alquiler de Piso Exclusivo: %s') % self.floor_id.name,
                 'product_uom_qty': 1,
+                'product_uom': self.plan_id.product_id.uom_id.id,
                 'price_unit': price_floor,
             }))
             

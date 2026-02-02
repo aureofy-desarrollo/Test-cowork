@@ -355,6 +355,7 @@ class CoworkAccessRequest(models.Model):
                 'product_id': self.service_id.product_id.id,
                 'name': _('%s - %s') % (self.service_id.name, self.name),
                 'quantity': self.duration_hours,
+                'product_uom_id': self.service_id.product_id.uom_id.id,
                 'price_unit': self.service_id.price,
             })],
         }
