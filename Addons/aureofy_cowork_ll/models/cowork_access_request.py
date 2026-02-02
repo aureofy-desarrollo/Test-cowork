@@ -91,7 +91,21 @@ class CoworkAccessRequest(models.Model):
         for vals in vals_list:
             if vals.get('name', _('Nuevo')) == _('Nuevo'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('cowork.access.request') or _('Nuevo')
+            
+            # Enforce payment method for guests
+            if vals.get('is_guest'):
+                vals['payment_method'] = 'passes'
+                
         return super().create(vals_list)
+
+    def write(self, vals):
+        # Enforce payment method for guests if changed
+        if 'is_guest' in vals or 'payment_method' in vals:
+            for record in self:
+                if vals.get('is_guest', record.is_guest):
+                    vals['payment_method'] = 'passes'
+                    break
+        return super().write(vals)
     
     @api.depends('membership_id.credits_remaining')
     def _compute_credits_available(self):
