@@ -1,0 +1,629 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* aureofy_cowork_ll
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-02 15:00+0000\n"
+"PO-Revision-Date: 2026-02-02 15:00+0000\n"
+"Last-Translator: Antigravity\n"
+"Language-Team: \n"
+"Language: es_MX\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_membership
+#: msgid "Membresía"
+msgstr "Membresía"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_membership_plan
+#: msgid "Plan de Membresía"
+msgstr "Plan de Membresía"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_access_request
+#: msgid "Solicitud de Acceso a Servicio"
+msgstr "Solicitud de Acceso a Servicio"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_bed
+#: msgid "Cama de Coliving"
+msgstr "Cama de Coliving"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_desk
+#: msgid "Escritorio de Coworking"
+msgstr "Escritorio de Coworking"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_floor
+#: msgid "Piso del Espacio"
+msgstr "Piso del Espacio"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_service
+#: msgid "Servicio Adicional"
+msgstr "Servicio Adicional"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_policy
+#: msgid "Política de Espacio"
+msgstr "Política de Espacio"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_security_deposit
+#: msgid "Depósito de Seguridad"
+msgstr "Depósito de Seguridad"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_credits
+#: msgid "Créditos"
+msgstr "Créditos"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model,name:aureofy_cowork_ll.model_cowork_passes
+#: msgid "Pases de Miembro"
+msgstr "Pases de Miembro"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_bed__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_policy__name
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_tag__name
+msgid "Nombre"
+msgstr "Nombre"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership__partner_id
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__partner_id
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_credits__partner_id
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_passes__partner_id
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_rating__partner_id
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_security_deposit__partner_id
+msgid "Miembro"
+msgstr "Miembro"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership__state
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__state
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__state
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_bed__state
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__state
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_security_deposit__state
+msgid "Estado"
+msgstr "Estado"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership,state:0
+msgid "Borrador"
+msgstr "Borrador"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership,state:0
+msgid "Confirmada"
+msgstr "Confirmada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership,state:0
+msgid "Activa"
+msgstr "Activa"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership,state:0
+msgid "Expirada"
+msgstr "Expirada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership,state:0
+msgid "Cancelada"
+msgstr "Cancelada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,state:0
+msgid "Pendiente de Aprobación"
+msgstr "Pendiente de Aprobación"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,state:0
+msgid "Aprobada"
+msgstr "Aprobada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,state:0
+msgid "Rechazada"
+msgstr "Rechazada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,space_type:0
+#: selection:cowork.service,space_type:0
+#: selection:cowork.policy,space_type:0
+#: selection:crm.lead,space_type:0
+#: selection:res.partner,preferred_space_type:0
+msgid "Coworking"
+msgstr "Coworking"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,space_type:0
+#: selection:cowork.service,space_type:0
+#: selection:cowork.policy,space_type:0
+#: selection:crm.lead,space_type:0
+#: selection:res.partner,preferred_space_type:0
+msgid "Coliving"
+msgstr "Coliving"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,duration_type:0
+msgid "Diario"
+msgstr "Diario"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,duration_type:0
+msgid "Semanal"
+msgstr "Semanal"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,duration_type:0
+msgid "Mensual"
+msgstr "Mensual"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.membership.plan,duration_type:0
+msgid "Anual"
+msgstr "Anual"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__price
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__price
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__price
+msgid "Precio"
+msgstr "Precio"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__credits_included
+msgid "Créditos Incluidos"
+msgstr "Créditos Incluidos"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__passes_included
+msgid "Pases Incluidos (Mes)"
+msgstr "Pases Incluidos (Mes)"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership__credits_remaining
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_res_partner__total_credits
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__credits_available
+msgid "Créditos Disponibles"
+msgstr "Créditos Disponibles"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership__passes_remaining
+msgid "Pases Disponibles"
+msgstr "Pases Disponibles"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__date_scheduled
+msgid "Fecha Programada"
+msgstr "Fecha Programada"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__duration_hours
+msgid "Duración (horas)"
+msgstr "Duración (horas)"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__payment_method
+msgid "Método de Pago"
+msgstr "Método de Pago"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,payment_method:0
+msgid "Créditos"
+msgstr "Créditos"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,payment_method:0
+msgid "Pase de Acceso"
+msgstr "Pase de Acceso"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,payment_method:0
+msgid "Horas Incluidas (Call Room)"
+msgstr "Horas Incluidas (Call Room)"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,payment_method:0
+msgid "Factura"
+msgstr "Factura"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.access.request,payment_method:0
+msgid "Gratuito"
+msgstr "Gratuito"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_root
+msgid "Coworking & Coliving"
+msgstr "Coworking & Coliving"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_dashboard
+msgid "Dashboard"
+msgstr "Tablero"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_memberships
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_coworking
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_coliving
+msgid "Membresías"
+msgstr "Membresías"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_access
+msgid "Solicitudes de Acceso"
+msgstr "Solicitudes de Acceso"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_credits
+msgid "Créditos"
+msgstr "Créditos"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_reports
+msgid "Informes"
+msgstr "Informes"
+
+#. module: aureofy_cowork_ll
+#: model:ir.ui.menu,name:aureofy_cowork_ll.menu_cowork_config
+msgid "Configuración"
+msgstr "Configuración"
+
+#. module: aureofy_cowork_ll
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_membership.py:15
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_membership.py:127
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_membership.py:128
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_access_request.py:15
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_access_request.py:92
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_access_request.py:93
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_security_deposit.py:13
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_security_deposit.py:47
+#: code:pysrc/odoo/addons/aureofy_cowork_ll/models/cowork_security_deposit.py:48
+msgid "Nuevo"
+msgstr "Nuevo"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__building_name
+msgid "Edificio"
+msgstr "Edificio"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__address
+msgid "Dirección"
+msgstr "Dirección"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__city
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__city
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_bed__city
+msgid "Ciudad"
+msgstr "Ciudad"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.desk,desk_type:0
+msgid "Puesto Flexible"
+msgstr "Puesto Flexible"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.desk,desk_type:0
+msgid "Cabina Privada"
+msgstr "Cabina Privada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.desk,desk_type:0
+#: selection:cowork.service,service_type:0
+msgid "Sala de Reuniones"
+msgstr "Sala de Reuniones"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.desk,desk_type:0
+msgid "Hot Desk"
+msgstr "Hot Desk"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.bed,bed_type:0
+msgid "Individual"
+msgstr "Individual"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.bed,bed_type:0
+msgid "Compartida"
+msgstr "Compartida"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.bed,bed_type:0
+msgid "Litera"
+msgstr "Litera"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.bed,bed_type:0
+msgid "Habitación Privada"
+msgstr "Habitación Privada"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.floor,state:0
+#: selection:cowork.desk,state:0
+#: selection:cowork.bed,state:0
+msgid "Disponible"
+msgstr "Disponible"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.floor,state:0
+#: selection:cowork.desk,state:0
+#: selection:cowork.bed,state:0
+msgid "Ocupado"
+msgstr "Ocupado"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.floor,state:0
+#: selection:cowork.desk,state:0
+#: selection:cowork.bed,state:0
+msgid "Reservado"
+msgstr "Reservado"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.floor,state:0
+#: selection:cowork.desk,state:0
+#: selection:cowork.bed,state:0
+msgid "Mantenimiento"
+msgstr "Mantenimiento"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Salón de Eventos"
+msgstr "Salón de Eventos"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Espacio Compartido"
+msgstr "Espacio Compartido"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Cafetería"
+msgstr "Cafetería"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Taquilla"
+msgstr "Taquilla"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Estacionamiento"
+msgstr "Estacionamiento"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Internet Premium"
+msgstr "Internet Premium"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Impresión"
+msgstr "Impresión"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Cabina Telefónica"
+msgstr "Cabina Telefónica"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.service,service_type:0
+msgid "Otro"
+msgstr "Otro"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__auto_renew
+msgid "Renovación Automática"
+msgstr "Renovación Automática"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__requires_deposit
+msgid "Requiere Depósito"
+msgstr "Requiere Depósito"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__deposit_amount
+msgid "Monto del Depósito"
+msgstr "Monto del Depósito"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__is_recurring
+msgid "Es Recurrente"
+msgstr "Es Recurrente"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_membership_plan__allows_exclusive_floor
+msgid "Permite Piso Exclusivo"
+msgstr "Permite Piso Exclusivo"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__is_exclusive
+msgid "Es Exclusivo"
+msgstr "Es Exclusivo"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_floor__price_per_month
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__price_per_month
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_bed__price_per_month
+msgid "Precio por Mes"
+msgstr "Precio por Mes"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__price_per_day
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_bed__price_per_day
+msgid "Precio por Día"
+msgstr "Precio por Día"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_desk__price_per_hour
+msgid "Precio por Hora"
+msgstr "Precio por Hora"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__is_paid
+msgid "Es de Pago"
+msgstr "Es de Pago"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__credits_cost
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_access_request__credits_cost
+msgid "Costo en Créditos"
+msgstr "Costo en Créditos"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__allow_credit_payment
+msgid "Permite Pago con Créditos"
+msgstr "Permite Pago con Créditos"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_service__requires_approval
+msgid "Requiere Aprobación"
+msgstr "Requiere Aprobación"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_policy__is_mandatory
+msgid "Obligatoria"
+msgstr "Obligatoria"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_rating__rating
+msgid "Valoración"
+msgstr "Valoración"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_rating__feedback
+msgid "Comentarios"
+msgstr "Comentarios"
+
+#. module: aureofy_cowork_ll
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_credits__credits_type
+#: model:ir.model.fields,field_description:aureofy_cowork_ll.field_cowork_passes__pass_type
+msgid "Tipo"
+msgstr "Tipo"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+#: selection:cowork.passes,pass_type:0
+msgid "Otorgados"
+msgstr "Otorgados"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+msgid "Comprados"
+msgstr "Comprados"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+#: selection:cowork.passes,pass_type:0
+msgid "Usados"
+msgstr "Usados"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+#: selection:cowork.passes,pass_type:0
+msgid "Reembolso"
+msgstr "Reembolso"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+#: selection:cowork.passes,pass_type:0
+msgid "Expirados"
+msgstr "Expirados"
+
+#. module: aureofy_cowork_ll
+#: selection:cowork.credits,credits_type:0
+#: selection:cowork.passes,pass_type:0
+msgid "Renovación Mensual"
+msgstr "Renovación Mensual"
+
+#. module: aureofy_cowork_ll
+#: msgid "Vender Paquete"
+msgstr "Vender Paquete"
+
+#. module: aureofy_cowork_ll
+#: msgid "Enviar Solicitud"
+msgstr "Enviar Solicitud"
+
+#. module: aureofy_cowork_ll
+#: msgid "Aprobar"
+msgstr "Aprobar"
+
+#. module: aureofy_cowork_ll
+#: msgid "Rechazar"
+msgstr "Rechazar"
+
+#. module: aureofy_cowork_ll
+#: msgid "Cancelar"
+msgstr "Cancelar"
+
+#. module: aureofy_cowork_ll
+#: msgid "Configuración"
+msgstr "Configuración"
+
+#. module: aureofy_cowork_ll
+#: msgid "Informes"
+msgstr "Informes"
+
+#. module: aureofy_cowork_ll
+#: msgid "Análisis de Membresías"
+msgstr "Análisis de Membresías"
+
+#. module: aureofy_cowork_ll
+#: msgid "Análisis de Accesos"
+msgstr "Análisis de Accesos"
+
+#. module: aureofy_cowork_ll
+#: msgid "Pisos Alquilados"
+msgstr "Pisos Alquilados"
+
+#. module: aureofy_cowork_ll
+#: msgid "Escritorios Alquilados"
+msgstr "Escritorios Alquilados"
+
+#. module: aureofy_cowork_ll
+#: msgid "Espacios"
+msgstr "Espacios"
+
+#. module: aureofy_cowork_ll
+#: msgid "Planes y Servicios"
+msgstr "Planes y Servicios"
+
+#. module: aureofy_cowork_ll
+#: msgid "Otros"
+msgstr "Otros"
+
+#. module: aureofy_cowork_ll
+#: msgid "Notas"
+msgstr "Notas"
+
+#. module: aureofy_cowork_ll
+#: msgid "Programación"
+msgstr "Programación"
+
+#. module: aureofy_cowork_ll
+#: msgid "Pago"
+msgstr "Pago"
+
+#. module: aureofy_cowork_ll
+#: msgid "Gestión"
+msgstr "Gestión"
